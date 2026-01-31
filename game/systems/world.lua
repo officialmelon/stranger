@@ -30,7 +30,18 @@ end
 --// Object
 
 function World.createObject(image)
+    assert(image)
 
+    return {
+        image = image,
+        w = image:getWidth(),
+        h = image:getHeight(),
+
+        draw = function(self, x, y, scale)
+            scale = scale or 1
+             love.graphics.draw(self.image, x, y, 0, scale, scale)
+        end
+    }
 end
 
 --// Handlers
@@ -40,7 +51,12 @@ function World.update(dt)
 end
 
 function World.draw()
-    utils.debugDraw()
+    local objects = state.world["Enviroment"]["Objects"]
+    table.sort(objects, function(a, b) return a.zindex < b.zindex end)
+
+    for _, obj in ipairs(objects) do
+        obj.obj:draw(obj.x, obj.y, obj.scale)
+    end
 end
 
 return World

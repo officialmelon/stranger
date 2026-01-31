@@ -8,7 +8,7 @@ local utils = require("utils.utils")
 --// Sprite
 
 local Sprites = {
-    ["Player"] = peachy.new("assets/sprites/player/test_player.json", love.graphics.newImage("assets/sprites/player/test_player.png"), "Player")
+    ["Player"] = peachy.new("assets/sprites/player/crawl.json", love.graphics.newImage("assets/sprites/player/crawl.png"), "Crawl")
 }
 
 local Binds = {
@@ -18,7 +18,8 @@ local Binds = {
 
 --// Controllers
 function player.goTo(x, y)
-    
+    state.player.x = x
+    state.player.y = y
 end
 
 function player.setState()
@@ -27,8 +28,10 @@ end
 
 --// Handlers
 function player.draw()
-    Sprites["Player"]:draw(state.player.x, state.player.y)
+    local s = state.player.scale or 1
+    Sprites["Player"]:draw(state.player.x, state.player.y, 0, s, s)
 end
+
 
 function player.update(dt)
     Sprites["Player"]:update(dt)

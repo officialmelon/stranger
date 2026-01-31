@@ -6,11 +6,13 @@ function utils.clamp(low, n, high)
     return math.min(math.max(n, low), high) 
 end
 
-function Utils.setup_img(img_link)
-    -- local img = love.
+function utils.setup_img(img_link)
+    local img = love.graphics.newImage(img_link)
+    img:setFilter("nearest", "nearest")
+    return img
 end
 
-function Utils.debugDraw()
+function utils.debugDraw()
     --// draw obj
     local world = state.world["WorldObj"]
     if not world then return end
