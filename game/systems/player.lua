@@ -50,16 +50,26 @@ function player.update(dt)
     end
 
     Sprites["Player"]:update(dt)
+    local dx = state.player.speed * dt
+
     if love.keyboard.isDown(Binds["Right"]) then
         Sprites["Player"]:play()
-        state.player.x = utils.clamp(0, state.player.x + state.player.speed, love.graphics.getWidth()) 
+        state.player.x = utils.clamp(
+            0,
+            state.player.x + dx,
+            love.graphics.getWidth()
+        )
     elseif love.keyboard.isDown(Binds["Left"]) then
         Sprites["Player"]:play()
-        state.player.x = utils.clamp(0, state.player.x - state.player.speed, love.graphics.getWidth()) 
+        state.player.x = utils.clamp(
+            0,
+            state.player.x - dx,
+            love.graphics.getWidth()
+        )
     else
-        --// no movement
         Sprites["Player"]:stop()
     end
+
 end
 
 return player

@@ -6,7 +6,7 @@ return {
     hp=100,
     maxhp=100,
 
-    speed = 0.5,
+    speed = 100,
 
     isHiding = false,
     currentHidingSpot = nil
