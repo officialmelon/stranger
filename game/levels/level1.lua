@@ -9,7 +9,7 @@ function level.load()
 
     player.goTo(0, 475)
 
-    --// Level objects
+    --// map creation
 
     local dresser = world.createObject(utils.setup_img("assets/sprites/enviroment/dresser.png"))
     world.insertObjectIntoEnviroment(dresser, 300, 470, 1.25, 3)
@@ -21,16 +21,15 @@ function level.load()
     world.insertObjectIntoEnviroment(painting, 600, 250, 1.25, 2)
 
     local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
-    world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2)
+    world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 1600)
+end
 
-    local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
-    world.insertObjectIntoEnviroment(planks, 394, 625, 1, 2)
+function level.update(dt)
+    
+end
 
-    local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
-    world.insertObjectIntoEnviroment(planks, 788, 625, 1, 2)
-
-    local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
-    world.insertObjectIntoEnviroment(planks, 1182, 625, 1, 2)
+function level.kill()
+    
 end
 
 return level

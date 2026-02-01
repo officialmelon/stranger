@@ -8,7 +8,7 @@ local utils = require("utils.utils")
 
 local worldObj = state.world["WorldObj"]
 
-function World.insertObjectIntoEnviroment(object, x, y, scale, zindex)
+function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX)
     zindex = zindex or 1
     scale = scale or 1
     x = x or 0
@@ -22,6 +22,7 @@ function World.insertObjectIntoEnviroment(object, x, y, scale, zindex)
         y = y,
         scale = scale,
         zindex = zindex,
+        loopToX = loopX
     }
 
     table.insert(state.world["Enviroment"]["Objects"], newObj)
@@ -59,7 +60,17 @@ function World.draw()
     table.sort(objects, function(a, b) return a.zindex < b.zindex end)
 
     for _, obj in ipairs(objects) do
-        obj.obj:draw(obj.x, obj.y, obj.scale)
+        if obj.loopToX then
+            local imgW = obj.obj.w * obj.scale
+            local x = obj.x
+
+            while x < obj.loopToX do
+                obj.obj:draw(x, obj.y, obj.scale)
+                x = x + imgW
+            end
+        else
+            obj.obj:draw(obj.x, obj.y, obj.scale)
+        end
     end
 end
 

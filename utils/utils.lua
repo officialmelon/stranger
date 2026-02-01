@@ -1,6 +1,7 @@
 local utils = {}
 
 local state = require("state.state")
+local push = require("libraries.push.push")
 
 function utils.clamp(low, n, high) 
     return math.min(math.max(n, low), high) 
@@ -21,6 +22,12 @@ function utils.debugDraw()
     local x, y, w, h = world:getRect(items[i])
     love.graphics.rectangle("line", x, y, w, h)
     end
+end
+
+function utils.initWindow()
+    local w, h = love.window.getDesktopDimensions()
+    local windowWidth, windowHeight = w * 0.7, h * 0.7
+    push:setupScreen(1280, 720, windowWidth, windowHeight, {fullscreen = false})
 end
 
 return utils

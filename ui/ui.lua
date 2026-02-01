@@ -1,6 +1,7 @@
 local ui = {}
 
 local bar_offset = { x = 5, y = 10 }
+local gameWidth, gameHeight = 1280, 720
 
 local slot = love.graphics.newImage("assets/sprites/hud/slot.png")
 local pause = love.graphics.newImage("assets/sprites/hud/pause.png")
@@ -16,7 +17,7 @@ local w, h = mic:getWidth() * scale, mic:getHeight() * scale
 local vol = 0
 local displayVol = 0
 
-function ui.draw(gameWidth)
+function ui.draw()
 	for i = 1, 5 do
 		love.graphics.draw(slot, bar_offset.x + (i * 60), bar_offset.y)
 	end
