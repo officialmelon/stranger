@@ -7,22 +7,22 @@ local worldspace = require("ui.worldspace")
 local chest = require("game.objects.chest")
 local door = require("game.objects.door")
 local bed = require("game.objects.bed")
+local window = require("game.objects.window")
 
 local level = {}
 
 function level.load()
     world.clear()
 
-    player.goTo(0, 475)
+    player.goTo(0, 350)
 
     --// map creation
 
     local dresser = world.createObject(utils.setup_img("assets/sprites/enviroment/dresser.png"))
     world.insertObjectIntoEnviroment(dresser, 300, 470, 1.25, 3)
 
-    local chest = chest.create(550, 470)
+    chest.create(550, 470)
     door.create(1000, 305, "level2")
-
     bed.create(1400, 500, true)
 
     --// sits on desk
@@ -32,6 +32,8 @@ function level.load()
 
     local painting = world.createObject(utils.setup_img("assets/sprites/enviroment/blacked_out_painting.png"))
     world.insertObjectIntoEnviroment(painting, 600, 250, 1.25, 2)
+    
+    window.create(1250, 350)
 
     local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
     world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 1600)

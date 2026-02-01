@@ -8,7 +8,7 @@ local utils = require("utils.utils")
 --// Sprite
 
 local Sprites = {
-    ["Player"] = peachy.new("assets/sprites/player/crawl.json", utils.setup_img("assets/sprites/player/crawl.png"), "Crawl")
+    ["Player"] = peachy.new("assets/sprites/player/walking.json", utils.setup_img("assets/sprites/player/walking.png"), "Walk")
 }
 
 local Binds = {
