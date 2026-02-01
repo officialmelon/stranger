@@ -13,7 +13,9 @@ local Sprites = {
 
 local Binds = {
     ["Right"] = "d",
-    ["Left"] = "a"
+    ["Left"] = "a",
+
+    ["exitHiding"] = "q"
 }
 
 --// Controllers
@@ -28,12 +30,25 @@ end
 
 --// Handlers
 function player.draw()
+    if state.player.isHiding then
+        return
+    end
+
     local s = state.player.scale or 1
     Sprites["Player"]:draw(state.player.x, state.player.y, 0, s, s)
 end
 
 
 function player.update(dt)
+    if state.player.isHiding then
+        if love.keyboard.isDown(Binds["exitHiding"]) then
+            if state.player.currentHidingSpot then
+                state.player.currentHidingSpot.exit()
+            end
+        end
+        return
+    end
+
     Sprites["Player"]:update(dt)
     if love.keyboard.isDown(Binds["Right"]) then
         Sprites["Player"]:play()

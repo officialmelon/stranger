@@ -4,6 +4,8 @@ local utils = require("utils.utils")
 local ui = require("ui.ui")
 local worldspace = require("ui.worldspace")
 
+local chest = require("game.objects.chest")
+
 local level = {}
 
 function level.load()
@@ -16,8 +18,7 @@ function level.load()
     local dresser = world.createObject(utils.setup_img("assets/sprites/enviroment/dresser.png"))
     world.insertObjectIntoEnviroment(dresser, 300, 470, 1.25, 3)
 
-    local chest = world.createObject(utils.setup_img("assets/sprites/enviroment/chest/chest_closed.png"))
-    world.insertObjectIntoEnviroment(chest, 550, 470, 1.25, 3)
+    local chest = chest.create(550, 470)
 
     local lamp = world.createObject(utils.setup_img("assets/sprites/enviroment/desk_lamp.png"))
     world.insertObjectIntoEnviroment(lamp, 320, 385, 1.25, 2)

@@ -26,6 +26,8 @@ function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX)
     }
 
     table.insert(state.world["Enviroment"]["Objects"], newObj)
+
+    return newObj
 end
 
 --// Object

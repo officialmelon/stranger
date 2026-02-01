@@ -15,10 +15,38 @@ local micX, micY = 1200, 550
 local scale = 2
 local w, h = mic:getWidth() * scale, mic:getHeight() * scale
 
+local font = love.graphics.newFont("assets/fonts/NFPixels-Regular.ttf", 18)
+
 local vol = 0
 local displayVol = 0
 
+local storedTexts = {}
+
+function ui.displayText(x, y, text)
+	table.insert(storedTexts, {
+		text = text,
+		x=x,
+		y=y
+	})
+
+	return {
+			remove = function()
+				for i, v in ipairs(storedTexts) do
+					if v.text == text then
+						table.remove(storedTexts, i)
+						break
+					end
+				end
+			end
+		}
+end
+
 function ui.draw()
+	for _, textObj in pairs(storedTexts) do
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setFont(font)
+        love.graphics.print(textObj.text, textObj.x, textObj.y)
+	end
 
 	for i = 1, 5 do
 		love.graphics.draw(slot, bar_offset.x + (i * 60), bar_offset.y)

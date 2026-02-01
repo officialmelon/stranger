@@ -8,5 +8,6 @@ return {
 
     speed = 0.5,
 
-    isHiding = false
+    isHiding = false,
+    currentHidingSpot = nil
 }
