@@ -10,5 +10,6 @@ return {
     speed = 100,
 
     isHiding = false,
-    currentHidingSpot = nil
+    currentHidingSpot = nil,
+    facingRight = true
 }

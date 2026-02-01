@@ -30,13 +30,15 @@ end
 
 --// Handlers
 function player.draw()
-    if state.player.isHiding then
-        return
-    end
+    if state.player.isHiding then return end
 
     local s = state.player.scale or 1
-    Sprites["Player"]:draw(state.player.x, state.player.y, 0, s, s)
+    local sx = state.player.facingRight and s or -s
+    local ox = Sprites["Player"]:getWidth() / 2
+    local oy = 0
+    Sprites["Player"]:draw(state.player.x + ox, state.player.y + oy, 0, sx, s, ox, oy)
 end
+
 
 
 function player.update(dt)
@@ -51,12 +53,13 @@ function player.update(dt)
 
     Sprites["Player"]:update(dt)
     state.player.width = Sprites["Player"]:getWidth() * state.player.scale
-    state.player.height = Sprites["Player"]:getHeight() * state.player.scale -- Add height too
+    state.player.height = Sprites["Player"]:getHeight() * state.player.scale
     
     local dx = state.player.speed * dt
     local world = require("game.systems.world")
 
     if love.keyboard.isDown(Binds["Right"]) then
+        state.player.facingRight = true
         Sprites["Player"]:play()
         
         local newX = state.player.x + dx
@@ -65,6 +68,7 @@ function player.update(dt)
         end
 
     elseif love.keyboard.isDown(Binds["Left"]) then
+        state.player.facingRight = false
         Sprites["Player"]:play()
         
         local newX = state.player.x - dx

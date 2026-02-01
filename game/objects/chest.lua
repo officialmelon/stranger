@@ -31,7 +31,6 @@ function Chest.create(x, y)
             return
         end
 
-        stored_x, stored_y = x, y
         text = ui.displayText(
             1280/2 - love.graphics.getFont():getWidth(hidingMessage)/2,
             720 - 100,
@@ -39,7 +38,6 @@ function Chest.create(x, y)
 
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
 
-        player.goTo(stored_x,stored_y)
         player.setState("isHiding", true)
 
         print("hiding")
@@ -50,7 +48,6 @@ function Chest.create(x, y)
             exit = function ()
                 state.world["Lighting"].vignetteSize = 1
                 player.setState("isHiding", false)
-                player.goTo(stored_x, stored_y)
                 isHidingInside = false
                 instance.obj = sprites["closed"]
                 text.remove()

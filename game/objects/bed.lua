@@ -22,7 +22,7 @@ function Bed.create(x, y, hasCollision)
     local isHidingInside = false
 
     local collisionBox = hasCollision and {
-        x = 50, --// offset
+        x = 0, --// offset for colliding with edge
         y = 0, --// offset
         width = img_open:getWidth(),
         height = img_open:getHeight()
@@ -38,7 +38,6 @@ function Bed.create(x, y, hasCollision)
             return
         end
 
-        stored_x, stored_y = x, y
         text = ui.displayText(
             love.graphics.getWidth()/2 - love.graphics.getFont():getWidth(hidingMessage)/2,
             love.graphics.getHeight() - 100,
@@ -46,7 +45,6 @@ function Bed.create(x, y, hasCollision)
 
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
 
-        player.goTo(stored_x,stored_y)
         player.setState("isHiding", true)
 
         print("hiding")
@@ -57,20 +55,19 @@ function Bed.create(x, y, hasCollision)
             exit = function ()
                 state.world["Lighting"].vignetteSize = 1
                 player.setState("isHiding", false)
-                player.goTo(stored_x, stored_y)
                 isHidingInside = false
                 instance.obj = sprites["hiding"]
                 text.remove()
 
                 local centerX, centerY = utils.getObjectCenter(instance)
-                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract)
+                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 35, 2, onInteract)
             end
         }
 
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX - 200, centerY - 50, "Hide", 25, 2, onInteract)
+    worldspace.create_interact_worldspace_ui(centerX - 200, centerY - 50, "Hide", 35, 2, onInteract)
 end
 
 return Bed
