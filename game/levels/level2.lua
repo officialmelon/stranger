@@ -22,11 +22,6 @@ function level.load()
     local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
     world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 1600)
 
-    --// Interacts
-
-    worldspace.create_interact_worldspace_ui(550, 470, "Hide", 25, 2, function ()
-        print("SSS")
-    end)
 end
 
 function level.update(dt)
