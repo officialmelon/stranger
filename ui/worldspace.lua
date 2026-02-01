@@ -2,7 +2,7 @@ local ui = {}
 local interact_btn = love.graphics.newImage("assets/sprites/enviroment/interact.png")
 local state = require("state.state")
 local utils = require("utils.utils")
-local worldspace_ui = {}
+ui.worldspace_ui = {}
 
 local FADE_SPEED = 6
 local font = love.graphics.newFont("assets/fonts/NFPixels-Regular.ttf", 18)
@@ -19,11 +19,17 @@ function ui.create_interact_worldspace_ui(x, y, text, radius, holdTime, callback
         lock = false,
         alpha = 0
     }
-    table.insert(worldspace_ui, obj)
+    table.insert(ui.worldspace_ui, obj)
+end
+
+function ui.clear_worldspace_ui()
+    for i = #ui.worldspace_ui, 1, -1 do
+        table.remove(ui.worldspace_ui, i)
+    end
 end
 
 function ui.draw()
-    for _, interact in pairs(worldspace_ui) do
+    for _, interact in pairs(ui.worldspace_ui) do
         if not interact.lock and interact.alpha > 0 then
             local imgW = interact_btn:getWidth()
             local imgH = interact_btn:getHeight()
@@ -58,8 +64,8 @@ function ui.draw()
 end
 
 function ui.update(dt)
-    for i = #worldspace_ui, 1, -1 do
-        local interact = worldspace_ui[i]
+    for i = #ui.worldspace_ui, 1, -1 do
+        local interact = ui.worldspace_ui[i]
         if not interact.lock then
             local inRange = utils.getDistance(state.player.x, state.player.y, interact.x, interact.y) < interact.radius
 
@@ -74,7 +80,7 @@ function ui.update(dt)
                 if interact.held >= interact.holdTime then
                     interact.callback()
                     interact.lock = true
-                    table.remove(worldspace_ui, i)
+                    table.remove(ui.worldspace_ui, i)
                 end
             else
                 interact.held = 0

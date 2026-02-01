@@ -9,7 +9,8 @@ local modules = {
     ["player"] = require("game.systems.player"),
     ["world"] = require("game.systems.world"),
     ["effects"] = require("game.systems.effects"),
-    ["worldspace"] = require("ui.worldspace")
+    ["worldspace"] = require("ui.worldspace"),
+    ["fade"] = require("ui.fade")
 }
 
 --// Stuff
@@ -21,8 +22,11 @@ end
 function gameplay.loadLevel(levelName) --// Level handler
     assert(levelName)
 
+    modules["state"].world["Enviroment"]["Objects"] = {}
+    modules["worldspace"].clear_worldspace_ui()
+
     local loaded_level = require("game.levels." .. levelName)
-    modules["state"].world["CurrentLevel"] = loaded_level
+    modules["state"].world["CurrentLevel"] = levelName
 
     loaded_level.load()
 end
@@ -35,9 +39,14 @@ function gameplay.draw()
     modules["camera"].pop()
     modules["effects"].draw()
     modules["ui"].draw()
+    modules["fade"].draw()
+
+    --// debug
+    love.graphics.print(modules["state"].world["CurrentLevel"],0,0)
 end
 
 function gameplay.update(dt)
+    modules["fade"].update(dt)
     modules["player"].update(dt)
     modules["camera"].update(dt)
     modules["world"].update(dt)
