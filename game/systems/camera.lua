@@ -14,7 +14,8 @@ end
 
 function camera.update(dt)
     local cam = state.world.Camera
-    local targetX = state.player.x - (1280 / 2) / state.world["Camera"].scale
+    local targetX = (state.player.x + state.player.width / 2)
+                - (1280 / 2) / cam.scale
     local targetY = state.player.y - (720 / 2) / state.world["Camera"].scale
     cam.x = cam.x + (targetX - cam.x) * state.world["Camera"].smooth * dt
     cam.y = cam.y + (targetY - cam.y) * state.world["Camera"].smooth * dt

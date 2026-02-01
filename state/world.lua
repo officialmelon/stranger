@@ -5,7 +5,10 @@ return {
         }
     },
 
-    ["Lighting"] = {},
+    ["Lighting"] = {
+        vignetteSize = 1,
+        hideVignetteSize = 1.5
+    },
     ["WorldObj"] = love.physics.newWorld(),
     ["Camera"] = {
         x = 0,

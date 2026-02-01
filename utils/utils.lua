@@ -36,5 +36,10 @@ function utils.getDistance(x1, y1, x2, y2)
     return math.sqrt(dx*dx + dy*dy)
 end
 
+function utils.getObjectCenter(obj)
+    local centerX = obj.x + (obj.obj.w * obj.scale) / 2
+    local centerY = obj.y + (obj.obj.h * obj.scale) / 2
+    return centerX, centerY
+end
 
 return utils

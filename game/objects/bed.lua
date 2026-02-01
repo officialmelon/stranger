@@ -1,4 +1,4 @@
---// Chest
+--// Bed
 local utils = require("utils.utils")
 local world = require("game.systems.world")
 local worldspace = require("ui.worldspace")
@@ -6,22 +6,29 @@ local player = require("game.systems.player")
 local ui = require("ui.ui")
 local state = require("state.state")
 
-local Chest = {}
+local Bed = {}
 
-local img_open = utils.setup_img("assets/sprites/enviroment/chest/chest_open.png")
-local img_closed = utils.setup_img("assets/sprites/enviroment/chest/chest_closed.png")
+local img_open = utils.setup_img("assets/sprites/enviroment/bed/bed_default.png")
+local img_closed = utils.setup_img("assets/sprites/enviroment/Bed/bed_hiding.png") -- Fixed typo: was loading open.png twice
 
 local sprites = {
-    ["open"]   = world.createObject(img_open),
-    ["closed"] = world.createObject(img_closed)
+    ["default"]   = world.createObject(img_open),
+    ["hiding"] = world.createObject(img_closed)
 }
 
 local hidingMessage = "Press Q to exit hiding..."
 
-function Chest.create(x, y)
+function Bed.create(x, y, hasCollision)
     local isHidingInside = false
 
-    local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 1.25, 3)
+    local collisionBox = hasCollision and {
+        x = 50, --// offset
+        y = 0, --// offset
+        width = img_open:getWidth(),
+        height = img_open:getHeight()
+    } or nil
+
+    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 1.75, 3, nil, collisionBox)
 
     local stored_x, stored_y
     local text
@@ -33,8 +40,8 @@ function Chest.create(x, y)
 
         stored_x, stored_y = x, y
         text = ui.displayText(
-            1280/2 - love.graphics.getFont():getWidth(hidingMessage)/2,
-            720 - 100,
+            love.graphics.getWidth()/2 - love.graphics.getFont():getWidth(hidingMessage)/2,
+            love.graphics.getHeight() - 100,
             hidingMessage)
 
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
@@ -45,24 +52,25 @@ function Chest.create(x, y)
         print("hiding")
         isHidingInside = true 
         
-        instance.obj = sprites["open"]
+        instance.obj = sprites["default"]
         state.player.currentHidingSpot = {
             exit = function ()
                 state.world["Lighting"].vignetteSize = 1
                 player.setState("isHiding", false)
                 player.goTo(stored_x, stored_y)
                 isHidingInside = false
-                instance.obj = sprites["closed"]
+                instance.obj = sprites["hiding"]
                 text.remove()
 
                 local centerX, centerY = utils.getObjectCenter(instance)
-                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract)
-                end
+                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, onInteract)
+            end
         }
+
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract)
+    worldspace.create_interact_worldspace_ui(centerX - 200, centerY - 50, "Hide", 25, 2, onInteract)
 end
 
-return Chest
+return Bed

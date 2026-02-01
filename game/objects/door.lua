@@ -29,7 +29,7 @@ function Door.create(x, y, level_name)
         end)
     end
 
-    worldspace.create_interact_worldspace_ui(x + 75, y + 150, "Enter Room", 25, 2, onInteract)
+    worldspace.create_interact_worldspace_ui(x + 75, y + 150, "Enter Room", 15, 2, onInteract)
 end
 
 return Door

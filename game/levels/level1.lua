@@ -6,6 +6,7 @@ local worldspace = require("ui.worldspace")
 
 local chest = require("game.objects.chest")
 local door = require("game.objects.door")
+local bed = require("game.objects.bed")
 
 local level = {}
 
@@ -22,6 +23,10 @@ function level.load()
     local chest = chest.create(550, 470)
     door.create(1000, 305, "level2")
 
+    bed.create(1400, 500, true)
+
+    --// sits on desk
+
     local lamp = world.createObject(utils.setup_img("assets/sprites/enviroment/desk_lamp.png"))
     world.insertObjectIntoEnviroment(lamp, 320, 385, 1.25, 2)
 
@@ -30,12 +35,6 @@ function level.load()
 
     local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
     world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 1600)
-
-    --// Interacts
-
-    worldspace.create_interact_worldspace_ui(550, 470, "Hide", 25, 2, function ()
-        print("SSS")
-    end)
 end
 
 function level.update(dt)

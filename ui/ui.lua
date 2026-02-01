@@ -15,7 +15,7 @@ local micX, micY = 1200, 550
 local scale = 2
 local w, h = mic:getWidth() * scale, mic:getHeight() * scale
 
-local font = love.graphics.newFont("assets/fonts/NFPixels-Regular.ttf", 18)
+local font = love.graphics.newFont("assets/fonts/NFPixels-Regular.ttf", 24)
 
 local vol = 0
 local displayVol = 0
@@ -42,12 +42,6 @@ function ui.displayText(x, y, text)
 end
 
 function ui.draw()
-	for _, textObj in pairs(storedTexts) do
-        love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font)
-        love.graphics.print(textObj.text, textObj.x, textObj.y)
-	end
-
 	for i = 1, 5 do
 		love.graphics.draw(slot, bar_offset.x + (i * 60), bar_offset.y)
 	end
@@ -59,6 +53,13 @@ function ui.draw()
 	love.graphics.setScissor(micX, micY + h - filledHeight, w, filledHeight)
 	love.graphics.draw(mic_color, micX, micY, 0, scale, scale)
 	love.graphics.setScissor()
+
+	for _, textObj in pairs(storedTexts) do
+		print(textObj.text)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setFont(font)
+        love.graphics.print(textObj.text, textObj.x, textObj.y)
+	end
 end
 
 function ui.update(dt)

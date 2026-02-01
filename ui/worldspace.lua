@@ -64,22 +64,38 @@ function ui.draw()
 end
 
 function ui.update(dt)
+    -- First pass: find the closest interact in range
+    local closestInteract = nil
+    local closestDistance = math.huge
+    
+    for _, interact in ipairs(ui.worldspace_ui) do
+        if not interact.lock then
+            local distance = utils.getDistance(state.player.x, state.player.y, interact.x, interact.y)
+            
+            if distance < interact.radius and distance < closestDistance then
+                closestDistance = distance
+                closestInteract = interact
+            end
+        end
+    end
+    
     for i = #ui.worldspace_ui, 1, -1 do
         local interact = ui.worldspace_ui[i]
         if not interact.lock then
             local inRange = utils.getDistance(state.player.x, state.player.y, interact.x, interact.y) < interact.radius
+            local isClosest = (interact == closestInteract)
 
-            if inRange then
+            if inRange and isClosest then
                 interact.alpha = math.min(interact.alpha + FADE_SPEED * dt, 1)
             else
                 interact.alpha = math.max(interact.alpha - FADE_SPEED * dt, 0)
             end
 
-            if love.keyboard.isDown("f") and inRange then
+            if love.keyboard.isDown("f") and inRange and isClosest then
                 interact.held = interact.held + dt
                 if interact.held >= interact.holdTime then
-                    interact.callback()
                     interact.lock = true
+                    interact.callback()
                     table.remove(ui.worldspace_ui, i)
                 end
             else

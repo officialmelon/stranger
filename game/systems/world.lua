@@ -8,7 +8,7 @@ local utils = require("utils.utils")
 
 local worldObj = state.world["WorldObj"]
 
-function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX)
+function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX, collisionBox)
     zindex = zindex or 1
     scale = scale or 1
     x = x or 0
@@ -22,7 +22,8 @@ function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX)
         y = y,
         scale = scale,
         zindex = zindex,
-        loopToX = loopX
+        loopToX = loopX,
+        collision = collisionBox
     }
 
     table.insert(state.world["Enviroment"]["Objects"], newObj)
@@ -31,6 +32,26 @@ function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX)
 end
 
 --// Object
+
+function World.checkCollision(x, y, width, height)
+    for _, obj in ipairs(state.world["Enviroment"]["Objects"]) do
+        if obj.collision then
+            local collBox = obj.collision
+            local objX = obj.x + collBox.x
+            local objY = obj.y + collBox.y
+            local objW = collBox.width * obj.scale
+            local objH = collBox.height * obj.scale
+            
+            if x < objX + objW and
+               x + width > objX and
+               y < objY + objH and
+               y + height > objY then
+                return true, obj
+            end
+        end
+    end
+    return false
+end
 
 function World.createObject(image)
     assert(image)

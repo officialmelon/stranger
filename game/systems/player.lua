@@ -8,7 +8,7 @@ local utils = require("utils.utils")
 --// Sprite
 
 local Sprites = {
-    ["Player"] = peachy.new("assets/sprites/player/crawl.json", love.graphics.newImage("assets/sprites/player/crawl.png"), "Crawl")
+    ["Player"] = peachy.new("assets/sprites/player/crawl.json", utils.setup_img("assets/sprites/player/crawl.png"), "Crawl")
 }
 
 local Binds = {
@@ -50,26 +50,31 @@ function player.update(dt)
     end
 
     Sprites["Player"]:update(dt)
+    state.player.width = Sprites["Player"]:getWidth() * state.player.scale
+    state.player.height = Sprites["Player"]:getHeight() * state.player.scale -- Add height too
+    
     local dx = state.player.speed * dt
+    local world = require("game.systems.world")
 
     if love.keyboard.isDown(Binds["Right"]) then
         Sprites["Player"]:play()
-        state.player.x = utils.clamp(
-            0,
-            state.player.x + dx,
-            love.graphics.getWidth()
-        )
+        
+        local newX = state.player.x + dx
+        if not world.checkCollision(newX, state.player.y, state.player.width, state.player.height) then
+            state.player.x = newX
+        end
+
     elseif love.keyboard.isDown(Binds["Left"]) then
         Sprites["Player"]:play()
-        state.player.x = utils.clamp(
-            0,
-            state.player.x - dx,
-            love.graphics.getWidth()
-        )
+        
+        local newX = state.player.x - dx
+        if not world.checkCollision(newX, state.player.y, state.player.width, state.player.height) then
+            state.player.x = newX
+        end
+
     else
         Sprites["Player"]:stop()
     end
-
 end
 
 return player
