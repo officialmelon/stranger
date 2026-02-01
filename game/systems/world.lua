@@ -44,6 +44,10 @@ function World.createObject(image)
     }
 end
 
+function World.clear()
+    state.world["Enviroment"]["Objects"] = {}
+end
+
 --// Handlers
 
 function World.update(dt)
