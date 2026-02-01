@@ -22,8 +22,8 @@ function player.goTo(x, y)
     state.player.y = y
 end
 
-function player.setState()
-
+function player.setState(flag, flagState)
+    state.player[flag] = flagState
 end
 
 --// Handlers
@@ -36,9 +36,14 @@ end
 function player.update(dt)
     Sprites["Player"]:update(dt)
     if love.keyboard.isDown(Binds["Right"]) then
+        Sprites["Player"]:play()
         state.player.x = utils.clamp(0, state.player.x + state.player.speed, love.graphics.getWidth()) 
     elseif love.keyboard.isDown(Binds["Left"]) then
+        Sprites["Player"]:play()
         state.player.x = utils.clamp(0, state.player.x - state.player.speed, love.graphics.getWidth()) 
+    else
+        --// no movement
+        Sprites["Player"]:stop()
     end
 end
 

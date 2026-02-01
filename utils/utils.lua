@@ -30,4 +30,11 @@ function utils.initWindow()
     push:setupScreen(1280, 720, windowWidth, windowHeight, {fullscreen = false})
 end
 
+function utils.getDistance(x1, y1, x2, y2)
+    local dx = x2 - x1
+    local dy = y2 - y1
+    return math.sqrt(dx*dx + dy*dy)
+end
+
+
 return utils

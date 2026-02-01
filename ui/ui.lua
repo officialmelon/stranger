@@ -8,6 +8,7 @@ local pause = love.graphics.newImage("assets/sprites/hud/pause.png")
 local mic = love.graphics.newImage("assets/sprites/hud/microphone.png")
 local mic_color = love.graphics.newImage("assets/sprites/hud/microphone_color.png")
 
+
 local microphone = require("game.systems.mic")
 
 local micX, micY = 1200, 550
@@ -18,6 +19,7 @@ local vol = 0
 local displayVol = 0
 
 function ui.draw()
+
 	for i = 1, 5 do
 		love.graphics.draw(slot, bar_offset.x + (i * 60), bar_offset.y)
 	end

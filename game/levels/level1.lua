@@ -1,6 +1,8 @@
 local world = require("game.systems.world")
 local player = require("game.systems.player")
 local utils = require("utils.utils")
+local ui = require("ui.ui")
+local worldspace = require("ui.worldspace")
 
 local level = {}
 
@@ -14,6 +16,9 @@ function level.load()
     local dresser = world.createObject(utils.setup_img("assets/sprites/enviroment/dresser.png"))
     world.insertObjectIntoEnviroment(dresser, 300, 470, 1.25, 3)
 
+    local chest = world.createObject(utils.setup_img("assets/sprites/enviroment/chest/chest_closed.png"))
+    world.insertObjectIntoEnviroment(chest, 550, 470, 1.25, 3)
+
     local lamp = world.createObject(utils.setup_img("assets/sprites/enviroment/desk_lamp.png"))
     world.insertObjectIntoEnviroment(lamp, 320, 385, 1.25, 2)
 
@@ -22,6 +27,12 @@ function level.load()
 
     local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
     world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 1600)
+
+    --// Interacts
+
+    worldspace.create_interact_worldspace_ui(550, 470, "Hide", 25, 2, function ()
+        print("SSS")
+    end)
 end
 
 function level.update(dt)

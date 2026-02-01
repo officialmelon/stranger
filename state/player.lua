@@ -6,5 +6,7 @@ return {
     hp=100,
     maxhp=100,
 
-    speed = 1
+    speed = 0.5,
+
+    isHiding = false
 }

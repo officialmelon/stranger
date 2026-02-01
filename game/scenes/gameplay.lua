@@ -8,7 +8,8 @@ local modules = {
     ["camera"] = require("game.systems.camera"),
     ["player"] = require("game.systems.player"),
     ["world"] = require("game.systems.world"),
-    ["effects"] = require("game.systems.effects")
+    ["effects"] = require("game.systems.effects"),
+    ["worldspace"] = require("ui.worldspace")
 }
 
 --// Stuff
@@ -30,16 +31,18 @@ function gameplay.draw()
     modules["camera"].apply()
     modules["world"].draw()
     modules["player"].draw()
+    modules["worldspace"].draw()
     modules["camera"].pop()
     modules["effects"].draw()
     modules["ui"].draw()
 end
 
 function gameplay.update(dt)
-    modules["camera"].update(dt)
     modules["player"].update(dt)
+    modules["camera"].update(dt)
     modules["world"].update(dt)
     modules["ui"].update(dt)
+    modules["worldspace"].update(dt)
 end
 
 return gameplay
