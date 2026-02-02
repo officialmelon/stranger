@@ -21,6 +21,30 @@ function ui.create_interact_worldspace_ui(x, y, text, radius, holdTime, callback
         removeOnInteract = removeOnInteract or false
     }
     table.insert(ui.worldspace_ui, obj)
+
+    return obj
+end
+
+function ui.remove_interact_worldspace_ui(obj)
+    for i, interact in ipairs(ui.worldspace_ui) do
+        if interact == obj then
+            table.remove(ui.worldspace_ui, i)
+            return
+        end
+    end
+end
+
+function ui.remove_interact_worldspace_ui_by_index(index)
+    table.remove(ui.worldspace_ui, index)
+end
+
+function ui.update_interact_text(obj, newText)
+    for _, interact in ipairs(ui.worldspace_ui) do
+        if interact == obj then
+            interact.text = newText
+            return
+        end
+    end
 end
 
 function ui.clear_worldspace_ui()

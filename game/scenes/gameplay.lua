@@ -10,13 +10,15 @@ local modules = {
     ["world"] = require("game.systems.world"),
     ["effects"] = require("game.systems.effects"),
     ["worldspace"] = require("ui.worldspace"),
-    ["fade"] = require("ui.fade")
+    ["fade"] = require("ui.fade"),
+    ["sounds"] = require("game.systems.sound")
 }
 
 --// Stuff
 
 function gameplay.init()
     modules["mic"].init()
+    modules["sounds"].play("rain_thunder", nil, nil, true)
 end
 
 function gameplay.loadLevel(levelName)
@@ -58,6 +60,7 @@ function gameplay.update(dt)
     modules["world"].update(dt)
     modules["ui"].update(dt)
     modules["worldspace"].update(dt)
+    modules["sounds"].update(dt)
 end
 
 return gameplay

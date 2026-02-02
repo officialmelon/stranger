@@ -7,31 +7,28 @@ local state = require("state.state")
 local gameplay = require("game.scenes.gameplay")
 local fade = require("ui.fade")
 local UI = require("ui.ui")
+local sound = require("game.systems.sound")
 
 local Door = {}
 
 local img_vent = utils.setup_img("assets/sprites/enviroment/vent/vent.png")
+local img_open = utils.setup_img("assets/sprites/enviroment/vent/vent_open.png")
 
 local sprites = {
-    ["vent"] = world.createObject(img_vent)
+    ["vent"] = world.createObject(img_vent),
+    ["open"] = world.createObject(img_open)
 }
+
+local vents = {}
 
 local noScrewdriver = "Screwed shut... Maybe there is another way to open this?"
 
-function Door.create(x, y, level_name, x_y_spawn)
-    local instance = world.insertObjectIntoEnviroment(sprites["vent"], x, y, 1, 0)
+function Door.create(x, y, level_name, x_y_spawn, id)
+    local instance = world.insertObjectIntoEnviroment(sprites["vent"], x, y, 1, 5)
+    local worldspace_ui = nil
 
-    local function onInteract()
-        if not state.player.equippedItem or state.player.equippedItem.name ~= "screwdriver" then
-            local c = UI.displayText(640, 620, noScrewdriver)
-            utils.delay(3, function ()
-                c.remove()
-            end)
-            return
-        end
-
+    local function goThroughVent()
         player.setState("isHiding", true)
-
         print("vent")
 
         fade.Out(function ()
@@ -42,7 +39,44 @@ function Door.create(x, y, level_name, x_y_spawn)
         end)
     end
 
-    worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Crawl through", 15, 2, onInteract, false)
+    local function onInteract()
+        if not state.player.equippedItem or state.player.equippedItem.name ~= "screwdriver" then
+            local c = UI.displayText(640, 620, noScrewdriver)
+            utils.delay(3, function ()
+                c.remove()
+            end)
+            return
+        end
+
+        worldspace.remove_interact_worldspace_ui(worldspace_ui)
+
+        sound.play("vent_open")
+
+        instance.obj = sprites["open"]
+        worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Enter Vent", 15, 2, goThroughVent, false)
+        
+        for _, vent in ipairs(vents) do
+            if vent.id == id then
+                vent.open = true
+            end
+        end
+    end
+
+    local isOpen = false
+    for _, vent in ipairs(vents) do
+        if vent.id == id and vent.open then
+            isOpen = true
+            break
+        end
+    end
+
+    if isOpen then
+        instance.obj = sprites["open"]
+        worldspace_ui = worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Enter Vent", 15, 2, goThroughVent, false)
+    else
+        table.insert(vents, {inst=instance, id=id, open=false})
+        worldspace_ui = worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Unscrew Vent", 15, 2, onInteract, false)
+    end
 end
 
 return Door

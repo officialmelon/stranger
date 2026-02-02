@@ -5,6 +5,7 @@ local state = require("state.state")
 local peachy = require("libraries.peachy")
 local utils = require("utils.utils")
 local camera = require("game.systems.camera")
+local sounds = require("game.systems.sound")
 
 --// Sprite
 
@@ -25,6 +26,9 @@ local Binds = {
 
     ["exitHiding"] = "q"
 }
+
+local footstepTimer = 0
+local footstepInterval = 0.4
 
 --// Controllers
 function player.goTo(x, y)
@@ -53,13 +57,14 @@ end
 
 function player.addToInventory(itemName)
     if #state.player.inventory >= state.player.maxSlots then return end
+    sounds.play("item_pickup")
     table.insert(state.player.inventory, {
         name = itemName,
         sprite = utils.setup_img("assets/sprites/items/" .. itemName .. "/" .. itemName .. ".png")
     })
 end
 
-function player.equipItem(slot) --// 1 - 5
+function player.equipItem(slot)
     if not state.player.inventory[slot] then 
     state.player.equippedItem = nil
     return 
@@ -159,10 +164,20 @@ function player.update(dt)
             state.player.x = newX
         end
     end
+    
     if moving then
         player.setAnimation("Player")
+        footstepTimer = footstepTimer + dt
+        local interval = sprinting and footstepInterval * 0.6 or footstepInterval
+        if footstepTimer >= interval then
+            local footstep = math.random(1, 2)
+            local pitch = 0.8 + math.random() * 0.4
+            sounds.play("footstep_" .. footstep, 0.3, pitch, false)
+            footstepTimer = 0
+        end
     else
         player.setAnimation("Idle")
+        footstepTimer = 0
     end
     
     state.player.px = state.player.x + 300 / 2

@@ -30,8 +30,8 @@ function level.load()
 
     dresser.create(650, 470, true)
 
-    vent.create(1750, 545, "bedroom", {x=835,y=475})
-    door.create(1500, 305, "bedroom", false, {x=305,y=475})
+    vent.create(1750, 545, "bedroom", {x=835,y=475}, 1)
+    door.create(1500, 305, "bedroom", true, {x=305,y=475})
     door.create(150, 305, nil, true)
     wall.create(0, -15)
     wall.create(1965, -17)
