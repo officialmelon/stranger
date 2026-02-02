@@ -29,8 +29,6 @@ function level.load()
 
     dresser.create(650, 470, true)
 
-    plants.create(675, 345)
-
     door.create(1500, 305, "bedroom")
     door.create(1300, 305, nil)
     wall.create(0, -15)
@@ -38,6 +36,9 @@ function level.load()
     floor.create(0, 625, 1800)
     window.create(550, 275)
     window.create(1000, 275)
+
+    plants.create(675, 345)
+    plants.create(1460 ,525, "standing_pot")
 end
 
 function level.update(dt)
