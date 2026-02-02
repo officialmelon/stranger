@@ -4,6 +4,7 @@ local player = {}
 local state = require("state.state")
 local peachy = require("libraries.peachy")
 local utils = require("utils.utils")
+local camera = require("game.systems.camera")
 
 --// Sprite
 
@@ -33,6 +34,13 @@ end
 
 function player.setState(flag, flagState)
     state.player[flag] = flagState
+end
+
+function player.getCameraTarget()
+    return {
+        x = state.player.x + state.player.width / 2,
+        y = state.player.y + state.player.height / 2 + state.world.Camera.y_offset
+    }
 end
 
 function player.setAnimation(name)

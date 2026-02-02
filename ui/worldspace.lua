@@ -28,20 +28,8 @@ function ui.clear_worldspace_ui()
 end
 
 function ui.draw()
-    love.graphics.setColor(1, 0, 0, 1)
-    love.graphics.rectangle("fill", state.player.px - 5, state.player.py - 5, 10, 10)
-    love.graphics.setColor(0, 1, 0, 1)
-    love.graphics.rectangle("fill", state.player.x - 5, state.player.y - 5, 10, 10)
     
     for _, interact in pairs(ui.worldspace_ui) do
-        if not interact.lock then
-            local distance = utils.getDistance(state.player.px, state.player.py, interact.x, interact.y)
-            if distance < interact.radius then
-                love.graphics.setColor(1, 1, 0, 0.5)
-                love.graphics.line(state.player.px, state.player.py, interact.x, interact.y)
-            end
-        end
-        
         if not interact.lock and interact.alpha > 0 then
             local imgW = interact_btn:getWidth()
             local imgH = interact_btn:getHeight()

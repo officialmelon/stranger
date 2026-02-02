@@ -46,6 +46,7 @@ function gameplay.draw()
 end
 
 function gameplay.update(dt)
+    modules["camera"].setTarget(modules["player"].getCameraTarget())
     modules["fade"].update(dt)
     modules["player"].update(dt)
     modules["camera"].update(dt)

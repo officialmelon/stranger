@@ -7,16 +7,21 @@ return {
 
     ["Lighting"] = {
         vignetteSize = 1,
-        hideVignetteSize = 1.5
+        hideVignetteSize = 1.5,
+        defaultVignetteSize = 1
     },
     ["WorldObj"] = love.physics.newWorld(),
     ["Camera"] = {
-        x = 0,
-        y = 250,
+        x=0,
+        y=0,
+        target = {
+            x=0,
+            y=0
+        },
         smooth = 6,
         scale = 1.5,
 
-        y_offset = 100,
+        y_offset = 0,
 
         shake = {
             intensity = 0,
@@ -24,5 +29,7 @@ return {
             time = 0
         }
     },
-    ["CurrentLevel"] = nil
+    ["CurrentLevel"] = nil,
+
+    isEditMode = false
 }

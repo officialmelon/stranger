@@ -12,14 +12,16 @@ function camera.setXY(x, y)
     cam.y = y or cam.y
 end
 
+function camera.setTarget(target) --// takes in table with x and y
+    state.world.Camera.target = target
+end
+
 function camera.update(dt)
     local cam = state.world.Camera
+    if not cam.target then return end
 
-    local targetX = (state.player.x + state.player.width / 2)
-        - (1280 / 2) / cam.scale
-
-    local targetY = (state.player.y + cam.y_offset)
-        - (720 / 2) / cam.scale
+    local targetX = cam.target.x - (1280 / 2) / cam.scale
+    local targetY = cam.target.y - (720 / 2) / cam.scale
 
     cam.x = cam.x + (targetX - cam.x) * cam.smooth * dt
     cam.y = cam.y + (targetY - cam.y) * cam.smooth * dt
@@ -32,7 +34,6 @@ function camera.update(dt)
         cam.shake.time = 0
     end
 end
-
 
 function camera.apply()
     local cam = state.world.Camera

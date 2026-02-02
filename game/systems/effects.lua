@@ -43,7 +43,7 @@ effects.effect_table = {
         enabled = true,
         currentSize = 1,
         draw = function()
-            local vignetteSize = state.world.Lighting.vignetteSize or 1
+            local vignetteSize = state.world.Lighting.vignetteSize or state.world.Lighting.defaultVignetteSize
             
             if not effects.effect_table.vingette.obj or 
                effects.effect_table.vingette.currentSize ~= vignetteSize then

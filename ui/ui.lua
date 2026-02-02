@@ -2,6 +2,8 @@ local ui = {}
 local state = require("state.state")
 local microphone = require("game.systems.mic")
 
+local isEditMode = state.world.isEditMode
+
 local gameWidth, gameHeight = 1280, 720
 local font = love.graphics.newFont("assets/fonts/NFPixels-Regular.ttf", 24)
 

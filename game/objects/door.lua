@@ -5,6 +5,7 @@ local worldspace = require("ui.worldspace")
 local player = require("game.systems.player")
 local gameplay = require("game.scenes.gameplay")
 local fade = require("ui.fade")
+local UI = require("ui.ui")
 
 local Door = {}
 
@@ -14,10 +15,20 @@ local sprites = {
     ["closed"] = world.createObject(img_closed)
 }
 
-function Door.create(x, y, level_name)
+local lockedtxt = "Door locked."
+
+function Door.create(x, y, level_name, locked)
     local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 2.5, 3)
 
     local function onInteract()
+        if locked then
+            local c = UI.displayText(640, 620, lockedtxt)
+            utils.delay(3, function ()
+                c.remove()
+            end)
+            return
+        end
+
         player.setState("isHiding", true)
 
         print("door")
