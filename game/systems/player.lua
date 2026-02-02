@@ -51,17 +51,74 @@ function player.setAnimation(name)
     end
 end
 
+function player.addToInventory(itemName)
+    if #state.player.inventory >= state.player.maxSlots then return end
+    table.insert(state.player.inventory, {
+        name = itemName,
+        sprite = utils.setup_img("assets/sprites/items/" .. itemName .. "/" .. itemName .. ".png")
+    })
+end
+
+function player.equipItem(slot) --// 1 - 5
+    if not state.player.inventory[slot] then 
+    state.player.equippedItem = nil
+    return 
+    end
+    state.player.equippedItem = state.player.inventory[slot]
+end
+
 --// Handlers
 function player.draw()
     if state.player.isHiding then return end
 
     local s = state.player.scale or 1
     local sx = state.player.facingRight and s or -s
-    local ox = Sprites["Player"]:getWidth() / 2
-    local oy = 0
-    Sprites[currentSprite]:draw(state.player.x + ox, state.player.y + oy, 0, sx, s, ox, oy)
-end           
 
+    local hitW, hitH = state.player.width, state.player.height
+    local sprite = Sprites[currentSprite]
+    local spriteW, spriteH = sprite:getWidth(), sprite:getHeight()
+
+    local drawX = state.player.x + hitW / 2
+    local drawY = state.player.y + hitH / 2
+
+    sprite:draw(
+        drawX,
+        drawY,
+        0,
+        sx,
+        s,
+        spriteW / 2,
+        spriteH / 2
+    )
+
+    local equippedItem = state.player.equippedItem
+    if equippedItem then
+        local img = equippedItem.sprite
+        local iw, ih = img:getWidth(), img:getHeight()
+
+        local itemScale = s
+        
+        local itemDrawY = drawY - (spriteH / 4)
+        
+        love.graphics.draw(
+            img,
+            drawX,
+            itemDrawY,
+            0,
+            -sx * itemScale,
+            itemScale,
+            iw / 2,
+            ih / 2
+        )
+    end
+end
+
+function player.keypressed(key)
+    local slot = tonumber(key)
+    if slot and slot >= 1 and slot <= 5 then
+        player.equipItem(slot)
+    end
+end
 
 function player.update(dt)
     if state.player.isHiding then
@@ -73,9 +130,6 @@ function player.update(dt)
         return
     end
     moving = false
-
-    state.player.width = Sprites["Player"]:getWidth() * state.player.scale
-    state.player.height = Sprites["Player"]:getHeight() * state.player.scale
     
     local dx = state.player.speed * dt
     local world = require("game.systems.world")

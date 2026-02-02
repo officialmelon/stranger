@@ -15,6 +15,7 @@ local floor = require("game.objects.floor")
 local painting = require("game.objects.painting")
 local cabinet = require("game.objects.cabinet")
 local plants = require("game.objects.plants")
+local vent = require("game.objects.vent")
 
 local level = {}
 
@@ -23,14 +24,15 @@ function level.load()
 
     state.world["Lighting"].vignetteSize = state.world["Lighting"].defaultVignetteSize
 
-    player.goTo(0, 400)
+    player.goTo(15, 475)
 
     --// map creation
 
     dresser.create(650, 470, true)
 
-    door.create(1500, 305, "bedroom")
-    door.create(1300, 305, nil)
+    vent.create(1750, 545, "bedroom", {x=835,y=475})
+    door.create(1500, 305, "bedroom", false, {x=305,y=475})
+    door.create(150, 305, nil, true)
     wall.create(0, -15)
     wall.create(1965, -17)
     floor.create(0, 625, 1800)
@@ -38,7 +40,7 @@ function level.load()
     window.create(1000, 275)
 
     plants.create(675, 345)
-    plants.create(1460 ,525, "standing_pot")
+    plants.create(900 ,350, "standing_pot")
 end
 
 function level.update(dt)

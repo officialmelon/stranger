@@ -6,8 +6,8 @@ return {
     py=0,
 
     scale = 0.65,
-    width = 0,
-    height = 0,  
+    width = 99,
+    height = 170,  
 
     hp=100,
     maxhp=100,
@@ -23,5 +23,10 @@ return {
 
     isHiding = false,
     currentHidingSpot = nil,
-    facingRight = true
+    facingRight = true,
+
+    inventory = {},
+    maxSlots = 5,
+
+    equippedItem = nil
 }

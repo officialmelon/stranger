@@ -5,15 +5,16 @@ local editor = require("game.scenes.editor")
 local camera = require("game.systems.camera")
 local gameplay = require("game.scenes.gameplay")
 
-local editorState = true
+local editorState = false
 
 function love.load()
     utils.initWindow()
     if not editorState then
         gameplay.init() 
     else
-        editor.start("hall")
+        editor.start("bedroom")
     end
+    gameplay.loadLevel("bedroom")
 end
 
 function love.draw()
@@ -26,6 +27,12 @@ function love.draw()
     end
     --// finish drawing
     push:finish()
+end
+
+function love.keypressed(key)
+    if not editorState then
+        gameplay.keypressed(key)
+    end
 end
 
 function love.update(dt)

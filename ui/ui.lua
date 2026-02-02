@@ -20,6 +20,14 @@ local staminaBar = { width = 250, height = 35, displayStamina = 100 }
 local vol, displayVol = 0, 0
 local storedTexts = {}
 
+local SLOT_PADDING = 6 
+local SLOT_W = slot:getWidth()
+local SLOT_H = slot:getHeight()
+
+local SLOT_INNER_W = SLOT_W - SLOT_PADDING * 2
+local SLOT_INNER_H = SLOT_H - SLOT_PADDING * 2
+
+
 function ui.displayText(x, y, text)
     local entry = { text = text, x = x, y = y }
     table.insert(storedTexts, entry)
@@ -37,9 +45,39 @@ end
 
 local function drawSlots()
     for i = 1, 5 do
-        love.graphics.draw(slot, 5 + (i * 60), 10)
+        local slotX = 5 + (i * 60)
+        local slotY = 10
+
+        love.graphics.draw(slot, slotX, slotY)
+
+        local item = state.player.inventory[i]
+        if item then
+            local img = item.sprite
+            local imgW = img:getWidth()
+            local imgH = img:getHeight()
+
+            local scale = math.min(
+                SLOT_INNER_W / imgW,
+                SLOT_INNER_H / imgH
+            )
+
+            local cx = slotX + SLOT_W / 2
+            local cy = slotY + SLOT_H / 2
+
+            love.graphics.draw(
+                img,
+                cx,
+                cy,
+                0,
+                scale,
+                scale,
+                imgW / 2,
+                imgH / 2
+            )
+        end
     end
 end
+
 
 local function drawStaminaBar()
     local barX = 25

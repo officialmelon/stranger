@@ -6,7 +6,7 @@ ui.worldspace_ui = {}
 local FADE_SPEED = 6
 local font = love.graphics.newFont("assets/fonts/NFPixels-Regular.ttf", 18)
 
-function ui.create_interact_worldspace_ui(x, y, text, radius, holdTime, callback)
+function ui.create_interact_worldspace_ui(x, y, text, radius, holdTime, callback, removeOnInteract)
     local obj = {
         text = text,
         x = x,
@@ -16,7 +16,9 @@ function ui.create_interact_worldspace_ui(x, y, text, radius, holdTime, callback
         holdTime = holdTime,
         held = 0,
         lock = false,
-        alpha = 0
+        alpha = 0,
+
+        removeOnInteract = removeOnInteract or false
     }
     table.insert(ui.worldspace_ui, obj)
 end
@@ -29,6 +31,10 @@ end
 
 function ui.draw()
     
+    if state.player.isHiding then
+        return
+    end
+
     for _, interact in pairs(ui.worldspace_ui) do
         if not interact.lock and interact.alpha > 0 then
             local imgW = interact_btn:getWidth()
@@ -61,6 +67,10 @@ function ui.update(dt)
     local closestInteract = nil
     local closestDistance = math.huge
     
+    if state.player.isHiding then
+        return
+    end
+
     for _, interact in ipairs(ui.worldspace_ui) do
         if not interact.lock then
             local distance = utils.getDistance(state.player.px, state.player.py, interact.x, interact.y)
@@ -87,7 +97,15 @@ function ui.update(dt)
                 if interact.held >= interact.holdTime then
                     interact.lock = true
                     interact.callback()
-                    table.remove(ui.worldspace_ui, i)
+                    
+                    if interact.removeOnInteract then
+                        table.remove(ui.worldspace_ui, i)
+                    else
+                        interact.held = 0
+                        interact.alpha = 0
+                    end
+                    
+                    interact.lock = false
                 end
             else
                 interact.held = 0

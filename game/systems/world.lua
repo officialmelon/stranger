@@ -26,6 +26,19 @@ function World.insertObjectIntoEnviroment(object, x, y, scale, zindex, loopX, co
     table.insert(state.world["Enviroment"]["Objects"], newObj)
     return newObj
 end
+ 
+function World.removeObjectFromEnviroment(object)
+    local objects = state.world.Enviroment.Objects
+
+    for i = #objects, 1, -1 do
+        if objects[i] == object then
+            table.remove(objects, i)
+            return true
+        end
+    end
+
+    return false
+end
 
 function World.checkCollision(x, y, width, height)
     for _, obj in ipairs(state.world["Enviroment"]["Objects"]) do

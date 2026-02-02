@@ -3,26 +3,27 @@ local utils = require("utils.utils")
 local world = require("game.systems.world")
 local worldspace = require("ui.worldspace")
 local player = require("game.systems.player")
+local state = require("state.state")
 local gameplay = require("game.scenes.gameplay")
 local fade = require("ui.fade")
 local UI = require("ui.ui")
 
 local Door = {}
 
-local img_closed = utils.setup_img("assets/sprites/enviroment/door/door_closed.png")
+local img_vent = utils.setup_img("assets/sprites/enviroment/vent/vent.png")
 
 local sprites = {
-    ["closed"] = world.createObject(img_closed)
+    ["vent"] = world.createObject(img_vent)
 }
 
-local lockedtxt = "Door locked."
+local noScrewdriver = "Screwed shut... Maybe there is another way to open this?"
 
-function Door.create(x, y, level_name, locked, x_y_spawn)
-    local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 2.5, 3)
+function Door.create(x, y, level_name, x_y_spawn)
+    local instance = world.insertObjectIntoEnviroment(sprites["vent"], x, y, 1, 0)
 
     local function onInteract()
-        if locked then
-            local c = UI.displayText(640, 620, lockedtxt)
+        if not state.player.equippedItem or state.player.equippedItem.name ~= "screwdriver" then
+            local c = UI.displayText(640, 620, noScrewdriver)
             utils.delay(3, function ()
                 c.remove()
             end)
@@ -31,7 +32,7 @@ function Door.create(x, y, level_name, locked, x_y_spawn)
 
         player.setState("isHiding", true)
 
-        print("door")
+        print("vent")
 
         fade.Out(function ()
             gameplay.loadLevel(level_name)
@@ -41,7 +42,7 @@ function Door.create(x, y, level_name, locked, x_y_spawn)
         end)
     end
 
-    worldspace.create_interact_worldspace_ui(x + 75, y + 150, "Enter Room", 15, 2, onInteract, true)
+    worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Crawl through", 15, 2, onInteract, false)
 end
 
 return Door

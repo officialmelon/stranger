@@ -53,13 +53,13 @@ function Chest.create(x, y)
                 text.remove()
 
                 local centerX, centerY = utils.getObjectCenter(instance)
-                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract)
+                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract, false)
                 end
         }
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract)
+    worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract, false)
 end
 
 return Chest

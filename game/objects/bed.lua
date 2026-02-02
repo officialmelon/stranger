@@ -51,14 +51,14 @@ function Bed.create(x, y, hasCollision, flipped)
                 text.remove()
                 local centerX, centerY = utils.getObjectCenter(instance)
                 local offsetX = flipped and 200 or -200
-                worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, "Hide", 15, 2, onInteract)
+                worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, "Hide", 15, 2, onInteract, false)
             end
         }
     end
     
     local centerX, centerY = utils.getObjectCenter(instance)
     local offsetX = flipped and 200 or -200
-    worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, "Hide", 15, 2, onInteract)
+    worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, "Hide", 15, 2, onInteract, false)
 end
 
 return Bed

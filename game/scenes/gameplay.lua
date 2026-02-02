@@ -46,6 +46,10 @@ function gameplay.draw()
     love.graphics.print(modules["state"].world["CurrentLevel"],0,0)
 end
 
+function gameplay.keypressed(key)
+    modules["player"].keypressed(key)
+end
+
 function gameplay.update(dt)
     modules["camera"].setTarget(modules["player"].getCameraTarget())
     modules["fade"].update(dt)
