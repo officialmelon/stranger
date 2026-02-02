@@ -10,6 +10,9 @@ local door = require("game.objects.door")
 local bed = require("game.objects.bed")
 local window = require("game.objects.window")
 local wall = require("game.objects.wall")
+local dresser = require("game.objects.dresser")
+local floor = require("game.objects.floor")
+local painting = require("game.objects.painting")
 
 local level = {}
 
@@ -22,27 +25,15 @@ function level.load()
 
     --// map creation
 
-    local dresser = world.createObject(utils.setup_img("assets/sprites/enviroment/dresser.png"))
-    world.insertObjectIntoEnviroment(dresser, 300, 470, 1.25, 3)
-
+    dresser.create(300, 470, true)
     chest.create(550, 470)
     door.create(1000, 305, "level2")
     bed.create(1400, 500, true)
     wall.create(0, 0)
     wall.create(1850, 0)
-
-    --// sits on desk
-
-    local lamp = world.createObject(utils.setup_img("assets/sprites/enviroment/desk_lamp.png"))
-    world.insertObjectIntoEnviroment(lamp, 320, 385, 1.25, 2)
-
-    local painting = world.createObject(utils.setup_img("assets/sprites/enviroment/blacked_out_painting.png"))
-    world.insertObjectIntoEnviroment(painting, 600, 250, 1.25, 2)
-    
+    floor.create(0, 625, 1850)
+    painting.create(600, 250)    
     window.create(1250, 350)
-
-    local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
-    world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 1850)
 end
 
 function level.update(dt)

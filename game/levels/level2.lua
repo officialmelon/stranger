@@ -29,7 +29,7 @@ function level.load()
 
     local painting = world.createObject(utils.setup_img("assets/sprites/enviroment/blacked_out_painting.png"))
     world.insertObjectIntoEnviroment(painting, 600, 250, 1.25, 2)
-    
+        
     local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
     world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 450)
 end
