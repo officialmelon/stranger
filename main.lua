@@ -3,28 +3,42 @@ local utils = require("utils.utils")
 local state = require("state.state")
 local editor = require("game.scenes.editor")
 local camera = require("game.systems.camera")
-
 local gameplay = require("game.scenes.gameplay")
-   
+
+local editorState = true
+
 function love.load()
     utils.initWindow()
-    gameplay.init()
-    --editor.start()
-    gameplay.loadLevel("level1")
+    if not editorState then
+        gameplay.init() 
+    else
+        editor.start("hall")
+    end
 end
 
 function love.draw()
     push:start()
     --// start drawing
-    --editor.draw()
-    gameplay.draw()
+    if not editorState then
+        gameplay.draw()
+    else
+        editor.draw()
+    end
     --// finish drawing
     push:finish()
 end
 
 function love.update(dt)
-    gameplay.update(dt)
+    if not editorState then
+        gameplay.update(dt)
+    end
     camera.update(dt)
     utils.update(dt)
-    --editor.update(dt)
+    if editorState then
+        editor.update(dt)
+    end
+end
+
+function love.wheelmoved(x, y)
+    editor.wheelmoved(x,y)
 end

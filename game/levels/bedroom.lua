@@ -10,28 +10,29 @@ local door = require("game.objects.door")
 local bed = require("game.objects.bed")
 local window = require("game.objects.window")
 local wall = require("game.objects.wall")
+local dresser = require("game.objects.dresser")
+local floor = require("game.objects.floor")
+local painting = require("game.objects.painting")
+local cabinet = require("game.objects.cabinet")
 
 local level = {}
 
 function level.load()
     world.clear()
 
-    state.world["Lighting"].vignetteSize = 2
-    player.goTo(0, 350)
+    state.world["Lighting"].vignetteSize = state.world["Lighting"].defaultVignetteSize
+
+    player.goTo(0, 400)
 
     --// map creation
 
-    door.create(0, 305, "level1", false)
-    wall.create(0, 0)
-    wall.create(450, 0)
-
-    --// sits on desk
-
-    local painting = world.createObject(utils.setup_img("assets/sprites/enviroment/blacked_out_painting.png"))
-    world.insertObjectIntoEnviroment(painting, 600, 250, 1.25, 2)
-        
-    local planks = world.createObject(utils.setup_img("assets/sprites/enviroment/looping_planks.png"))
-    world.insertObjectIntoEnviroment(planks, 0, 625, 1, 2, 450)
+    dresser.create(445, 470, true)
+    door.create(1000, 305, "hall")
+    bed.create(5, 500, false, true)
+    wall.create(0, -15)
+    wall.create(1175, -17)
+    floor.create(0, 625, 1000)
+    window.create(550, 275, "animated")
 end
 
 function level.update(dt)

@@ -19,15 +19,16 @@ function gameplay.init()
     modules["mic"].init()
 end
 
-function gameplay.loadLevel(levelName) --// Level handler
+function gameplay.loadLevel(levelName)
     assert(levelName)
-
     modules["state"].world["Enviroment"]["Objects"] = {}
     modules["worldspace"].clear_worldspace_ui()
-
-    local loaded_level = require("game.levels." .. levelName)
+    
+    local modulePath = "game.levels." .. levelName
+    package.loaded[modulePath] = nil
+    local loaded_level = require(modulePath)
+    
     modules["state"].world["CurrentLevel"] = levelName
-
     loaded_level.load()
 end
 

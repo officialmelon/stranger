@@ -1,0 +1,51 @@
+local world = require("game.systems.world")
+local player = require("game.systems.player")
+local utils = require("utils.utils")
+local ui = require("ui.ui")
+local worldspace = require("ui.worldspace")
+local state = require("state.state")
+
+local chest = require("game.objects.chest")
+local door = require("game.objects.door")
+local bed = require("game.objects.bed")
+local window = require("game.objects.window")
+local wall = require("game.objects.wall")
+local dresser = require("game.objects.dresser")
+local floor = require("game.objects.floor")
+local painting = require("game.objects.painting")
+local cabinet = require("game.objects.cabinet")
+local plants = require("game.objects.plants")
+
+local level = {}
+
+function level.load()
+    world.clear()
+
+    state.world["Lighting"].vignetteSize = state.world["Lighting"].defaultVignetteSize
+
+    player.goTo(0, 400)
+
+    --// map creation
+
+    dresser.create(650, 470, true)
+
+    plants.create(675, 345)
+
+    door.create(1500, 305, "bedroom")
+    door.create(1300, 305, nil)
+    wall.create(0, -15)
+    wall.create(1965, -17)
+    floor.create(0, 625, 1800)
+    window.create(550, 275)
+    window.create(1000, 275)
+end
+
+function level.update(dt)
+    
+end
+
+function level.kill()
+    
+end
+
+return level
