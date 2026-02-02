@@ -60,14 +60,14 @@ function Bed.create(x, y, hasCollision)
                 text.remove()
 
                 local centerX, centerY = utils.getObjectCenter(instance)
-                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 35, 2, onInteract)
+                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 15, 2, onInteract)
             end
         }
 
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX - 200, centerY - 50, "Hide", 35, 2, onInteract)
+    worldspace.create_interact_worldspace_ui(centerX - 200, centerY - 50, "Hide", 15, 2, onInteract)
 end
 
 return Bed
