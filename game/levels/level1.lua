@@ -8,6 +8,7 @@ local chest = require("game.objects.chest")
 local door = require("game.objects.door")
 local bed = require("game.objects.bed")
 local window = require("game.objects.window")
+local wall = require("game.objects.wall")
 
 local level = {}
 
@@ -24,6 +25,7 @@ function level.load()
     chest.create(550, 470)
     door.create(1000, 305, "level2")
     bed.create(1400, 500, true)
+    wall.create(0, 0)
 
     --// sits on desk
 
