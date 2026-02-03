@@ -1,6 +1,7 @@
 local ui = {}
 local state = require("state.state")
 local microphone = require("game.systems.mic")
+local utils = require("utils.utils")
 
 local isEditMode = state.world.isEditMode
 
@@ -28,9 +29,21 @@ local SLOT_INNER_W = SLOT_W - SLOT_PADDING * 2
 local SLOT_INNER_H = SLOT_H - SLOT_PADDING * 2
 
 
-function ui.displayText(x, y, text)
+function ui.displayText(x, y, text, removeAfterSeconds)
     local entry = { text = text, x = x, y = y }
     table.insert(storedTexts, entry)
+    if removeAfterSeconds then
+        utils.delay(removeAfterSeconds, function()
+
+            for i, v in ipairs(storedTexts) do
+                if v == entry then
+                    table.remove(storedTexts, i)
+                    break
+                end
+            end
+            
+        end)
+    end
     return {
         remove = function()
             for i, v in ipairs(storedTexts) do

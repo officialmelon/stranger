@@ -12,7 +12,6 @@ local sprites = {
     ["default"]   = world.createObject(img_open),
     ["hiding"] = world.createObject(img_closed)
 }
-local hidingMessage = "Press Q to exit hiding..."
 
 function Bed.create(x, y, hasCollision, flipped)
     flipped = flipped or false
@@ -33,9 +32,9 @@ function Bed.create(x, y, hasCollision, flipped)
             return
         end
         text = ui.displayText(
-            love.graphics.getWidth()/2 - love.graphics.getFont():getWidth(hidingMessage)/2,
+            utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["EXIT_HIDING"]),
             love.graphics.getHeight() - 100,
-            hidingMessage)
+            state.translations[state.translations.currentLanguage]["EXIT_HIDING"])
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
         player.setState("isHiding", true)
         print("hiding")
@@ -51,14 +50,13 @@ function Bed.create(x, y, hasCollision, flipped)
                 text.remove()
                 local centerX, centerY = utils.getObjectCenter(instance)
                 local offsetX = flipped and 200 or -200
-                worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, "Hide", 15, 2, onInteract, false)
             end
         }
     end
     
     local centerX, centerY = utils.getObjectCenter(instance)
     local offsetX = flipped and 200 or -200
-    worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, "Hide", 15, 2, onInteract, false)
+    worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, state.translations[state.translations.currentLanguage]["HIDE_PROMPT"], 15, 2, onInteract, false)
 end
 
 return Bed

@@ -16,14 +16,12 @@ local sprites = {
     ["closed"] = world.createObject(img_closed)
 }
 
-local hidingMessage = "Press Q to exit hiding..."
 
 function Chest.create(x, y)
     local isHidingInside = false
 
     local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 1.25, 3)
 
-    local stored_x, stored_y
     local text
 
     local function onInteract()
@@ -32,9 +30,9 @@ function Chest.create(x, y)
         end
 
         text = ui.displayText(
-            1280/2 - love.graphics.getFont():getWidth(hidingMessage)/2,
+            utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["EXIT_HIDING"]),
             720 - 100,
-            hidingMessage)
+            state.translations[state.translations.currentLanguage]["EXIT_HIDING"])
 
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
 
@@ -53,13 +51,12 @@ function Chest.create(x, y)
                 text.remove()
 
                 local centerX, centerY = utils.getObjectCenter(instance)
-                worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract, false)
                 end
         }
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, "Hide", 25, 2, onInteract, false)
+    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["HIDE_PROMPT"], 25, 2, onInteract, false)
 end
 
 return Chest

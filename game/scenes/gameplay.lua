@@ -18,7 +18,7 @@ local modules = {
 
 function gameplay.init()
     modules["mic"].init()
-    modules["sounds"].play("rain_thunder", nil, nil, true)
+    modules["player"].initRain()
 end
 
 function gameplay.loadLevel(levelName)

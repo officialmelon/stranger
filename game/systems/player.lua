@@ -30,6 +30,14 @@ local Binds = {
 local footstepTimer = 0
 local footstepInterval = 0.4
 
+local rainSource = nil
+local rain = {
+    volMin = 0.3,
+    volMax = 1.0,
+    nearDist = 200,
+    farDist = 500
+}
+
 --// Controllers
 function player.goTo(x, y)
     state.player.x = x
@@ -70,6 +78,10 @@ function player.equipItem(slot)
     return 
     end
     state.player.equippedItem = state.player.inventory[slot]
+end
+
+function player.initRain()
+    rainSource = sounds.play("rain_thunder", rain.volMin, nil, true)
 end
 
 --// Handlers
@@ -184,6 +196,27 @@ function player.update(dt)
     state.player.py = state.player.y + state.player.height / 2
 
     Sprites[currentSprite]:update(dt * (sprinting and state.player.sprintAnimationMultiplier or 1))
+
+    if rainSource then
+        local px = state.player.x + state.player.width / 2
+        local py = state.player.y + state.player.height / 2
+        local closestDist = math.huge
+
+        local windows = state.world.windows or {}
+        for _, win in ipairs(windows) do
+            local ddx = px - win.x
+            local ddy = py - win.y
+            local dist = math.sqrt(ddx * ddx + ddy * ddy)
+            if dist < closestDist then
+                closestDist = dist
+            end
+        end
+
+        local t = 1 - (closestDist - rain.nearDist) / (rain.farDist - rain.nearDist)
+        t = math.max(0, math.min(1, t))
+
+        rainSource:setVolume(rain.volMin + (rain.volMax - rain.volMin) * t)
+    end
 end
 
 return player

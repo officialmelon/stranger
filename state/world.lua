@@ -29,6 +29,8 @@ return {
             time = 0
         }
     },
+    windows = {},
+
     ["CurrentLevel"] = nil,
 
     isEditMode = false

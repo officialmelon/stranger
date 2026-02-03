@@ -19,15 +19,15 @@ function Screwdriver.create(x, y)
     local function onInteract()
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(
-            love.graphics.getWidth()/2 - love.graphics.getFont():getWidth("Picked up")/2,
+            utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),
             love.graphics.getHeight() - 100,
-            "Picked up")
+            state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"], 2.5)
 
         player.addToInventory("screwdriver")
     end
     
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, "Pickup Screwdriver", 15, 2, onInteract, true)
+    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["PICKUP_SCREWDRIVER"], 15, 2, onInteract, true)
 end
 
 return Screwdriver

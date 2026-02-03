@@ -38,6 +38,10 @@ function utils.setup_img(img_link)
     return img
 end
 
+function utils.returnTextCenteredWidth(hidingMessage)
+    return 1280/2 - love.graphics.getFont():getWidth(hidingMessage)/2
+end
+
 function utils.debugDraw()
     local world = state.world["WorldObj"]
     if not world then return end

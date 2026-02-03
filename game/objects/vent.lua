@@ -21,7 +21,6 @@ local sprites = {
 
 local vents = {}
 
-local noScrewdriver = "Screwed shut... Maybe there is another way to open this?"
 
 function Door.create(x, y, level_name, x_y_spawn, id)
     local instance = world.insertObjectIntoEnviroment(sprites["vent"], x, y, 1, 5)
@@ -41,10 +40,7 @@ function Door.create(x, y, level_name, x_y_spawn, id)
 
     local function onInteract()
         if not state.player.equippedItem or state.player.equippedItem.name ~= "screwdriver" then
-            local c = UI.displayText(640, 620, noScrewdriver)
-            utils.delay(3, function ()
-                c.remove()
-            end)
+            local c = UI.displayText(utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["CANT_OPEN_VENT"]), 620, state.translations[state.translations.currentLanguage]["CANT_OPEN_VENT"], 2.5)
             return
         end
 
@@ -53,7 +49,7 @@ function Door.create(x, y, level_name, x_y_spawn, id)
         sound.play("vent_open")
 
         instance.obj = sprites["open"]
-        worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Enter Vent", 15, 2, goThroughVent, false)
+        worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, state.translations[state.translations.currentLanguage]["VENT_PROMPT"], 15, 2, goThroughVent, false)
         
         for _, vent in ipairs(vents) do
             if vent.id == id then
@@ -72,10 +68,10 @@ function Door.create(x, y, level_name, x_y_spawn, id)
 
     if isOpen then
         instance.obj = sprites["open"]
-        worldspace_ui = worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Enter Vent", 15, 2, goThroughVent, false)
+        worldspace_ui = worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, state.translations[state.translations.currentLanguage]["VENT_PROMPT"], 15, 2, goThroughVent, false)
     else
         table.insert(vents, {inst=instance, id=id, open=false})
-        worldspace_ui = worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, "Unscrew Vent", 15, 2, onInteract, false)
+        worldspace_ui = worldspace.create_interact_worldspace_ui(x + 62.5, y - 37.5, state.translations[state.translations.currentLanguage]["VENT_UNSCREW_PROMPT"], 15, 2, onInteract, false)
     end
 end
 
