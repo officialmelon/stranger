@@ -47,5 +47,6 @@ function love.update(dt)
 end
 
 function love.wheelmoved(x, y)
+    if not editorState then return end
     editor.wheelmoved(x,y)
 end
