@@ -28,21 +28,20 @@ local SLOT_H = slot:getHeight()
 local SLOT_INNER_W = SLOT_W - SLOT_PADDING * 2
 local SLOT_INNER_H = SLOT_H - SLOT_PADDING * 2
 
-function ui.displayText(x, y, text, removeAfterSeconds)
-    local entry = { text = text, x = x, y = y }
-    table.insert(storedTexts, entry)
-    if removeAfterSeconds then
-        utils.delay(removeAfterSeconds, function()
-
-            for i, v in ipairs(storedTexts) do
-                if v == entry then
-                    table.remove(storedTexts, i)
-                    break
-                end
-            end
-            
-        end)
+local function getDelayAfterChar(text, index)
+    local char = string.sub(text, index, index)
+    if char == "." or char == "?" then
+        local next = string.sub(text, index + 1, index + 1)
+        if next ~= "." then
+            return 0.4
+        end
     end
+    return 0.04
+end
+
+function ui.displayText(x, y, text, removeAfterSeconds)
+    local entry = { text = text, x = x, y = y, visibleCount = 0, elapsed = 0, fullLength = #text, finished = false, removeAfter = removeAfterSeconds, removeElapsed = 0 }
+    table.insert(storedTexts, entry)
     return {
         remove = function()
             for i, v in ipairs(storedTexts) do
@@ -121,7 +120,7 @@ local function drawTexts()
     love.graphics.setFont(font)
     for _, textObj in ipairs(storedTexts) do
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.print(textObj.text, textObj.x, textObj.y)
+        love.graphics.print(string.sub(textObj.text, 1, textObj.visibleCount), textObj.x, textObj.y)
     end
 end
 
@@ -137,6 +136,28 @@ function ui.update(dt)
     vol = math.min(microphone.getMicVolume() * 10, 1)
     displayVol = displayVol + (vol - displayVol) * 8 * dt
     staminaBar.displayStamina = staminaBar.displayStamina + (state.player.stamina - staminaBar.displayStamina) * 10 * dt
+
+    for i = #storedTexts, 1, -1 do
+        local textObj = storedTexts[i]
+        if not textObj.finished then
+            textObj.elapsed = textObj.elapsed + dt
+            local currentDelay = getDelayAfterChar(textObj.text, textObj.visibleCount)
+            if textObj.elapsed >= currentDelay then
+                textObj.elapsed = 0
+                textObj.visibleCount = textObj.visibleCount + 1
+                if textObj.visibleCount >= textObj.fullLength then
+                    textObj.finished = true
+                end
+            end
+        else
+            if textObj.removeAfter then
+                textObj.removeElapsed = textObj.removeElapsed + dt
+                if textObj.removeElapsed >= textObj.removeAfter then
+                    table.remove(storedTexts, i)
+                end
+            end
+        end
+    end
 end
 
 return ui
