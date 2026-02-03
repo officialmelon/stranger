@@ -10,7 +10,10 @@ return {
         ["VENT_PROMPT"] = "Enter",
         ["VENT_UNSCREW_PROMPT"] = "Open vent",
 
-        ["PICKUP_SCREWDRIVER"] = "Pickup Screwdriver"
+        ["PICKUP_SCREWDRIVER"] = "Pickup Screwdriver",
+        ["EXAMINE_MUG_PROMPT"] = "Examine Mug",
+        ["EXAMINE_MUG"] = "huh? the mug... it has warm coffee? I haven't used this.",
+        ["PICKUP_MUG"] = "Pickup Mug"
     },
 
     currentLanguage = "English"

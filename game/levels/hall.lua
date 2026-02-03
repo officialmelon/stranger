@@ -16,6 +16,9 @@ local painting = require("game.objects.painting")
 local cabinet = require("game.objects.cabinet")
 local plants = require("game.objects.plants")
 local vent = require("game.objects.vent")
+local couch = require("game.objects.couch")
+
+local mug = require("game.objects.items.mug")
 
 local level = {}
 
@@ -34,13 +37,18 @@ function level.load()
     door.create(1500, 305, "bedroom", true, {x=305,y=475})
     door.create(150, 305, "bedroom_2", false, {x=500,y=475})
     wall.create(0, -15)
-    wall.create(1965, -17)
-    floor.create(0, 625, 1800)
+    wall.create(3000, -17)
+    floor.create(0, 625, 3000)
     window.create(550, 275)
     window.create(1000, 275)
 
     plants.create(675, 345)
     plants.create(900 ,350, "standing_pot")
+
+    dresser.create(2550, 485)
+    couch.create(2000, 425)
+
+    mug.create(2600, 465, true)
 end
 
 function level.update(dt)
