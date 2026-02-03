@@ -1,5 +1,7 @@
 local microphone = {}
 
+local state = require("state.state")
+
 local mic
 
 function microphone.getMicVolume()
@@ -21,6 +23,7 @@ end
 function microphone.init()
     local devices = love.audio.getRecordingDevices()
     mic = devices[1]
+    if not mic then state.world.micDisabled = true return end
     mic:start()
 end
 

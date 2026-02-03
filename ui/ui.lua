@@ -28,7 +28,6 @@ local SLOT_H = slot:getHeight()
 local SLOT_INNER_W = SLOT_W - SLOT_PADDING * 2
 local SLOT_INNER_H = SLOT_H - SLOT_PADDING * 2
 
-
 function ui.displayText(x, y, text, removeAfterSeconds)
     local entry = { text = text, x = x, y = y }
     table.insert(storedTexts, entry)

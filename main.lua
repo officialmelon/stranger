@@ -8,6 +8,7 @@ local gameplay = require("game.scenes.gameplay")
 local editorState = false
 
 function love.load()
+    love.mouse.setVisible(false)
     utils.initWindow()
     if not editorState then
         gameplay.init() 
