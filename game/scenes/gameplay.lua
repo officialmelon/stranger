@@ -11,7 +11,8 @@ local modules = {
     ["effects"] = require("game.systems.effects"),
     ["worldspace"] = require("ui.worldspace"),
     ["fade"] = require("ui.fade"),
-    ["sounds"] = require("game.systems.sound")
+    ["sounds"] = require("game.systems.sound"),
+    ["intruder"] = require("game.systems.intruder")
 }
 
 --// Stuff
@@ -19,6 +20,7 @@ local modules = {
 function gameplay.init()
     modules["mic"].init()
     modules["player"].initRain()
+    modules["intruder"].init()
 end
 
 function gameplay.loadLevel(levelName)
@@ -38,12 +40,13 @@ function gameplay.draw()
     modules["camera"].apply()
     modules["world"].draw()
     modules["player"].draw()
+    modules["intruder"].draw()
     modules["worldspace"].draw()
     modules["camera"].pop()
     modules["effects"].draw()
     modules["ui"].draw()
     modules["fade"].draw()
-
+    
     --// debug
     love.graphics.print(modules["state"].world["CurrentLevel"],0,0)
 end
@@ -61,6 +64,7 @@ function gameplay.update(dt)
     modules["ui"].update(dt)
     modules["worldspace"].update(dt)
     modules["sounds"].update(dt)
+    modules["intruder"].update(dt)
 end
 
 return gameplay

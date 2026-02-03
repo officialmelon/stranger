@@ -7,6 +7,7 @@ local gameplay = require("game.scenes.gameplay")
 local fade = require("ui.fade")
 local UI = require("ui.ui")
 local state = require("state.state")
+local intruderSystem = require("game.systems.intruder")
 
 local Door = {}
 
@@ -17,6 +18,10 @@ local sprites = {
 }
 
 function Door.create(x, y, level_name, locked, x_y_spawn)
+    local currentRoom = state.world["CurrentLevel"]
+    if currentRoom then
+        intruderSystem.registerDoor(currentRoom, level_name, x, x_y_spawn)
+    end
     local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 2.5, 3)
 
     local function onInteract()

@@ -3,10 +3,6 @@ local utils = {}
 local state = require("state.state")
 local push = require("libraries.push.push")
 
--- =========================
--- DELAY SYSTEM (NEW)
--- =========================
-
 local delayedCalls = {}
 
 function utils.delay(seconds, callback)

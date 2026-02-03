@@ -15,14 +15,14 @@ function love.load()
     else
         editor.start("hall")
     end
-    gameplay.loadLevel("hall")
+    gameplay.loadLevel("bedroom")
 end
 
 function love.draw()
     push:start()
     --// start drawing
     if not editorState then
-        gameplay.draw()
+         gameplay.draw()
     else
         editor.draw()
     end
