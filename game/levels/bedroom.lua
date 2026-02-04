@@ -16,6 +16,7 @@ local painting = require("game.objects.painting")
 local cabinet = require("game.objects.cabinet")
 local vent = require("game.objects.vent")
 
+local smartphone = require("game.objects.items.smartphone")
 local screwdriver = require("game.objects.items.screwdriver")
 
 local level = {}

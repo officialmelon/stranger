@@ -20,7 +20,7 @@ function Cabinet.create(x, y, name)
     if sprites[name or "default"].image:getHeight() > 225 then
         offset = (sprites[name or "default"].image:getHeight() - 225)
     end
-    local instance = world.insertObjectIntoEnviroment(sprites[name or "default"], x, y - (offset * 0.5), 0.6, 3)
+    local instance = world.insertObjectIntoEnviroment(sprites[name or "default"], x, y - (offset * 0.5), 0.6, 0.75)
 end
 
 return Cabinet

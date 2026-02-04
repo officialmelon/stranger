@@ -30,7 +30,8 @@ function Mug.create(x, y, storyOrDecoration) -- true if story, false if not.
         ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["EXAMINE_MUG"]),
             love.graphics.getHeight() - 100,
-            state.translations[state.translations.currentLanguage]["EXAMINE_MUG"], 2.5)
+            state.translations[state.translations.currentLanguage]["EXAMINE_MUG"], 2.5,
+            true)
         worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["PICKUP_MUG"], 15, 2, onPickup, true)
     end
 

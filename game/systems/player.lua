@@ -96,17 +96,13 @@ end
 --// Handlers
 function player.draw()
     if state.player.isHiding then return end
-
     local s = state.player.scale or 1
     local sx = state.player.facingRight and s or -s
-
     local hitW, hitH = state.player.width, state.player.height
     local sprite = Sprites[currentSprite]
     local spriteW, spriteH = sprite:getWidth(), sprite:getHeight()
-
     local drawX = state.player.x + hitW / 2
     local drawY = state.player.y + hitH / 2
-
     sprite:draw(
         drawX,
         drawY,
@@ -116,14 +112,13 @@ function player.draw()
         spriteW / 2,
         spriteH / 2
     )
-
     local equippedItem = state.player.equippedItem
     if equippedItem then
         local img = equippedItem.sprite
         local iw, ih = img:getWidth(), img:getHeight()
-
-        local itemScale = s
         
+        local maxHeight = 40
+        local itemScale = math.min(1, maxHeight / ih) 
         local itemDrawY = drawY - (spriteH / 4)
         
         love.graphics.draw(
@@ -132,7 +127,7 @@ function player.draw()
             itemDrawY,
             0,
             -sx * itemScale,
-            itemScale,
+            s * itemScale,
             iw / 2,
             ih / 2
         )

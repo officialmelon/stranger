@@ -56,7 +56,7 @@ function Bed.create(x, y, hasCollision, flipped)
     
     local centerX, centerY = utils.getObjectCenter(instance)
     local offsetX = flipped and 200 or -200
-    worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, state.translations[state.translations.currentLanguage]["HIDE_PROMPT"], 15, 2, onInteract, false)
+    worldspace.create_interact_worldspace_ui(centerX + offsetX, centerY - 50, state.translations[state.translations.currentLanguage]["HIDE_PROMPT"], 15, 0.75, onInteract, false)
 end
 
 return Bed

@@ -39,8 +39,8 @@ local function getDelayAfterChar(text, index)
     return 0.04
 end
 
-function ui.displayText(x, y, text, removeAfterSeconds)
-    local entry = { text = text, x = x, y = y, visibleCount = 0, elapsed = 0, fullLength = #text, finished = false, removeAfter = removeAfterSeconds, removeElapsed = 0 }
+function ui.displayText(x, y, text, removeAfterSeconds, isStoryline)
+    local entry = { text = text, x = x, y = y, visibleCount = 0, elapsed = 0, fullLength = #text, finished = false, removeAfter = removeAfterSeconds, removeElapsed = 0, isStoryline = isStoryline or false }
     table.insert(storedTexts, entry)
     return {
         remove = function()
@@ -140,6 +140,9 @@ function ui.update(dt)
     for i = #storedTexts, 1, -1 do
         local textObj = storedTexts[i]
         if not textObj.finished then
+            if textObj.isStoryline then
+                state.player.isAbleToMove = false
+            end
             textObj.elapsed = textObj.elapsed + dt
             local currentDelay = getDelayAfterChar(textObj.text, textObj.visibleCount)
             if textObj.elapsed >= currentDelay then
@@ -153,6 +156,9 @@ function ui.update(dt)
             if textObj.removeAfter then
                 textObj.removeElapsed = textObj.removeElapsed + dt
                 if textObj.removeElapsed >= textObj.removeAfter then
+                    if textObj.isStoryline then
+                        state.player.isAbleToMove = true
+                    end
                     table.remove(storedTexts, i)
                 end
             end

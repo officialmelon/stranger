@@ -56,7 +56,7 @@ function Chest.create(x, y)
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["HIDE_PROMPT"], 25, 2, onInteract, false)
+    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["HIDE_PROMPT"], 25, 0.75, onInteract, false)
 end
 
 return Chest
