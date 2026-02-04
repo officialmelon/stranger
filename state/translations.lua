@@ -8,6 +8,8 @@ return {
         ["HIDE_PROMPT"] = "Hide",
         ["DOOR_PROMPT"] = "Enter",
         ["VENT_PROMPT"] = "Enter",
+        ["STAIRS_PROMPT"] = "Go Upstairs",
+        ["PUSH_INTRUDER_HOLD_PROMPT"] = "Push (Spam)",
 
         ["VENT_UNSCREW_PROMPT"] = "Open vent",
         ["DIAL_911_SMARTPHONE"] = "crap... no battery",
@@ -17,7 +19,8 @@ return {
         ["EXAMINE_MUG_PROMPT"] = "Examine Mug",
         ["EXAMINE_MUG"] = "huh? the mug... it has warm coffee? I haven't used this.",
         ["PICKUP_MUG"] = "Pickup Mug",
-        ["PUSH_INTRUDER_HOLD_PROMPT"] = "Push (Spam)"
+
+        ["LOCKED_STAIRS"] = "The noise came from downstairs..."
     },
 
     currentLanguage = "English"
