@@ -13,7 +13,8 @@ return {
         ["PICKUP_SCREWDRIVER"] = "Pickup Screwdriver",
         ["EXAMINE_MUG_PROMPT"] = "Examine Mug",
         ["EXAMINE_MUG"] = "huh? the mug... it has warm coffee? I haven't used this.",
-        ["PICKUP_MUG"] = "Pickup Mug"
+        ["PICKUP_MUG"] = "Pickup Mug",
+        ["PUSH_INTRUDER_HOLD_PROMPT"] = "Push (Spam)"
     },
 
     currentLanguage = "English"

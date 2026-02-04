@@ -1,63 +1,117 @@
 { "frames": [
    {
-    "filename": "animations 0.aseprite",
+    "filename": "walking 0.png",
     "frame": { "x": 0, "y": 0, "w": 300, "h": 500 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
     "sourceSize": { "w": 300, "h": 500 },
-    "duration": 200
+    "duration": 100
    },
    {
-    "filename": "animations 2.aseprite",
+    "filename": "walking 1.png",
+    "frame": { "x": 300, "y": 0, "w": 300, "h": 500 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
+    "sourceSize": { "w": 300, "h": 500 },
+    "duration": 100
+   },
+   {
+    "filename": "walking 2.png",
     "frame": { "x": 600, "y": 0, "w": 300, "h": 500 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
     "sourceSize": { "w": 300, "h": 500 },
-    "duration": 200
+    "duration": 100
    },
    {
-    "filename": "animations 3.aseprite",
+    "filename": "walking 3.png",
     "frame": { "x": 900, "y": 0, "w": 300, "h": 500 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
     "sourceSize": { "w": 300, "h": 500 },
-    "duration": 200
+    "duration": 100
    },
    {
-    "filename": "animations 4.aseprite",
+    "filename": "walking 4.png",
     "frame": { "x": 1200, "y": 0, "w": 300, "h": 500 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
     "sourceSize": { "w": 300, "h": 500 },
-    "duration": 800
+    "duration": 100
    },
    {
-    "filename": "animations 5.aseprite",
+    "filename": "walking 5.png",
     "frame": { "x": 1500, "y": 0, "w": 300, "h": 500 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
     "sourceSize": { "w": 300, "h": 500 },
-    "duration": 800
+    "duration": 100
+   },
+   {
+    "filename": "walking 6.png",
+    "frame": { "x": 1800, "y": 0, "w": 300, "h": 500 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
+    "sourceSize": { "w": 300, "h": 500 },
+    "duration": 100
+   },
+   {
+    "filename": "walking 7.png",
+    "frame": { "x": 2100, "y": 0, "w": 300, "h": 500 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
+    "sourceSize": { "w": 300, "h": 500 },
+    "duration": 100
+   },
+   {
+    "filename": "walking 8.png",
+    "frame": { "x": 2400, "y": 0, "w": 300, "h": 500 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
+    "sourceSize": { "w": 300, "h": 500 },
+    "duration": 100
+   },
+   {
+    "filename": "walking 9.png",
+    "frame": { "x": 2700, "y": 0, "w": 300, "h": 500 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
+    "sourceSize": { "w": 300, "h": 500 },
+    "duration": 100
+   },
+   {
+    "filename": "walking 10.png",
+    "frame": { "x": 3000, "y": 0, "w": 300, "h": 500 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 300, "h": 500 },
+    "sourceSize": { "w": 300, "h": 500 },
+    "duration": 100
    }
  ],
  "meta": {
   "app": "https://www.aseprite.org/",
   "version": "1.3.15.2",
-  "image": "animations.png",
   "format": "RGBA8888",
-  "size": { "w": 1800, "h": 500 },
+  "size": { "w": 3300, "h": 500 },
   "scale": "1",
   "frameTags": [
-   { "name": "Walk", "from": 0, "to": 2, "direction": "forward", "color": "#000000ff" },
-   { "name": "Idle", "from": 3, "to": 4, "direction": "forward", "color": "#000000ff" }
+   { "name": "Walk", "from": 0, "to": 3, "direction": "forward", "color": "#000000ff" },
+   { "name": "Idle", "from": 4, "to": 6, "direction": "forward", "color": "#000000ff" },
+   { "name": "Push", "from": 7, "to": 10, "direction": "forward", "color": "#000000ff" }
   ],
   "layers": [
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+   { "name": "Sprite Sheet", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]

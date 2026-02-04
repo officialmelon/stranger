@@ -22,6 +22,7 @@ return {
     staminaRegenRate = 15,
 
     isHiding = false,
+    isAbleToMove = true,
     currentHidingSpot = nil,
     facingRight = true,
 

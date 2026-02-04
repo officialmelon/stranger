@@ -14,8 +14,12 @@ local moving = false
 
 local Sprites = {
     ["Player"] = peachy.new("assets/sprites/player/walking.json", utils.setup_img("assets/sprites/player/walking.png"), "Walk"),
-    ["Idle"] = peachy.new("assets/sprites/player/walking.json", utils.setup_img("assets/sprites/player/walking.png"), "Idle")
+    ["Idle"] = peachy.new("assets/sprites/player/walking.json", utils.setup_img("assets/sprites/player/walking.png"), "Idle"),
+    ["Push"] = peachy.new("assets/sprites/player/walking.json", utils.setup_img("assets/sprites/player/walking.png"), "Push")
 }
+
+local pushTimer = 0
+local pushDuration = 0.4
 
 Sprites[currentSprite]:play()
 
@@ -61,6 +65,11 @@ function player.setAnimation(name)
         currentSprite = name
         Sprites[name]:play()
     end
+end
+
+function player.push()
+    player.setAnimation("Push")
+    pushTimer = pushDuration
 end
 
 function player.addToInventory(itemName)
@@ -138,6 +147,21 @@ function player.keypressed(key)
 end
 
 function player.update(dt)
+
+    state.player.px = state.player.x + state.player.width / 2
+    state.player.py = state.player.y + state.player.height / 2
+
+    local currentAnim = Sprites[currentSprite]
+    local sprinting = love.keyboard.isDown(Binds["Sprint"]) and state.player.stamina > 0 and moving
+    currentAnim:update(dt * (sprinting and state.player.sprintAnimationMultiplier or 1))
+
+    if pushTimer > 0 then
+        pushTimer = pushTimer - dt
+        if pushTimer <= 0 then
+            player.setAnimation("Idle")
+        end
+    end
+
     if state.player.isHiding then
         if love.keyboard.isDown(Binds["exitHiding"]) then
             if state.player.currentHidingSpot then
@@ -146,6 +170,11 @@ function player.update(dt)
         end
         return
     end
+
+    if not state.player.isAbleToMove then
+        return
+    end
+
     moving = false
     
     local dx = state.player.speed * dt
@@ -191,11 +220,6 @@ function player.update(dt)
         player.setAnimation("Idle")
         footstepTimer = 0
     end
-    
-    state.player.px = state.player.x + 300 / 2
-    state.player.py = state.player.y + state.player.height / 2
-
-    Sprites[currentSprite]:update(dt * (sprinting and state.player.sprintAnimationMultiplier or 1))
 
     if rainSource then
         local px = state.player.x + state.player.width / 2

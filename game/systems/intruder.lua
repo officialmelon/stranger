@@ -5,6 +5,8 @@ local world = require("game.systems.world")
 local fade = require("ui.fade")
 local peachy = require("libraries.peachy")
 local utils = require("utils.utils")
+local worldui = require("ui.worldspace")
+local player = require("game.systems.player")
 
 local intruderState = nil
 local sprite = nil
@@ -15,6 +17,12 @@ local DOOR_WAIT_TIME = 2.5
 local wonderTargetX = nil
 local wonderTargetRoom = nil
 local wonderWaitTimer = 0
+
+
+local grabSpamMaxAmount = math.random(9,15)
+local grabSpamAmount = 0
+local grabSpamPrompt = nil
+local stunningTimer = 0
 
 local STATES = {
     ["FOLLOWING"] = "FOLLOWING",
@@ -144,14 +152,69 @@ end
 function intruder.update(dt)
     intruderState = state.intruder
     if not intruderState.active then return end
-
+    
     local playerRoom = state.world["CurrentLevel"]
     local myRoom = intruderState.currentRoom
-    local plrDist = utils.getDistance(intruderState.x, intruderState.y, state.player.x, state.player.y)
-
+    
     if sprite then sprite:update(dt) end
+    
+    local canSeePlayer = false
+    local distToPlayer = math.huge
+    
+    if myRoom == playerRoom and not state.player.isHiding then
+        local intruderCenterX = intruderState.x + intruderState.width / 2
+        local intruderCenterY = intruderState.y + intruderState.height / 2
+        local playerCenterX = state.player.x + state.player.width / 2
+        local playerCenterY = state.player.y + state.player.height / 2
+        
+        local dx = playerCenterX - intruderCenterX
+        local dy = playerCenterY - intruderCenterY
+        distToPlayer = math.sqrt(dx * dx + dy * dy)
+        
+        local playerIsInFront = (intruderState.facingRight and dx > 0) or (not intruderState.facingRight and dx < 0)
+        
+        if playerIsInFront and distToPlayer < 800 then
+            local steps = math.ceil(distToPlayer / 10)
+            canSeePlayer = true
+            
+            for i = 1, steps do
+                local t = i / steps
+                local checkX = intruderCenterX + dx * t - intruderState.width / 2
+                local checkY = intruderCenterY + dy * t - intruderState.height / 2
+                
+                if world.checkCollision(checkX, checkY, intruderState.width, intruderState.height) then
+                    canSeePlayer = false
+                    break
+                end
+            end
+        end
+    end
+    
+    if distToPlayer < 110 and stunningTimer <= 0 then
+        intruder.grabPlayer()
+    elseif grabSpamPrompt then
+        worldui.remove_interact_worldspace_ui(grabSpamPrompt)
+        grabSpamPrompt = nil
+        state.player.isAbleToMove = true
+    end
+    
+    if stunningTimer > 0 then
+        stunningTimer = stunningTimer - dt
+        setAnimation("Idle")
+    end
 
-    if myRoom == playerRoom and plrDist < 800 and not state.player.isHiding then
+    if grabSpamPrompt then
+        grabSpamPrompt.x = state.player.px
+        grabSpamPrompt.y = state.player.py
+        setAnimation("Idle")
+        return
+    end
+
+    if stunningTimer > 0 then return end
+    
+    local isChasing = intruderState.currentState == STATES["FOLLOWING"]
+    
+    if canSeePlayer or (isChasing and myRoom == playerRoom and not state.player.isHiding) then
         intruderState.currentState = STATES["FOLLOWING"]
         wonderTargetX, wonderTargetRoom, wonderWaitTimer = nil, nil, 0
         doorTimer = 0
@@ -169,6 +232,31 @@ function intruder.update(dt)
     else
         intruderState.currentState = STATES["WONDER"]
         intruder.wonder(dt)
+    end
+end
+
+function intruder.grabPlayer()
+    state.player.isAbleToMove = false
+    
+    if not grabSpamPrompt then
+        grabSpamPrompt = worldui.create_interact_worldspace_ui(
+            state.player.px,
+            state.player.py,
+            state.translations[state.translations.currentLanguage]["PUSH_INTRUDER_HOLD_PROMPT"],
+            150,
+            0.025,
+            function ()
+                grabSpamPrompt = nil
+                player.push()
+                grabSpamAmount = grabSpamAmount + 1
+                if grabSpamAmount >= grabSpamMaxAmount then
+                    state.player.isAbleToMove = true
+                    grabSpamAmount = 0
+                    stunningTimer = 2.5
+                end
+            end,
+            true
+        )
     end
 end
 

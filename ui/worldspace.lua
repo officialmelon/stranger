@@ -63,11 +63,11 @@ function ui.draw()
         if not interact.lock and interact.alpha > 0 then
             local imgW = interact_btn:getWidth()
             local imgH = interact_btn:getHeight()
-            love.graphics.setColor(1, 1, 1, interact.alpha)
+            love.graphics.setColor(1, 1, 1, 1)
             love.graphics.draw(interact_btn, interact.x - imgW / 2, interact.y - imgH)
             if interact.text and interact.text ~= "" then
                 local textW = font:getWidth(interact.text)
-                love.graphics.setColor(1, 1, 1, interact.alpha)
+                love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.setFont(font)
                 love.graphics.print(interact.text, interact.x - textW / 2, interact.y - imgH / 2 + imgH)
             end
@@ -76,10 +76,10 @@ function ui.draw()
             local barX = interact.x - barW / 2
             local barY = interact.y + 2
             local progress = interact.held / interact.holdTime
-            love.graphics.setColor(0.2, 0.2, 0.2, interact.alpha)
+            love.graphics.setColor(0.2, 0.2, 0.2, 1)
             love.graphics.rectangle("fill", barX, barY, barW, barH, 2)
             if progress > 0.01 then
-                love.graphics.setColor(1, 1, 1, interact.alpha)
+                love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.rectangle("fill", barX, barY, barW * progress, barH, 2)
             end
             love.graphics.setColor(1, 1, 1, 1)
@@ -106,6 +106,17 @@ function ui.update(dt)
         end
     end
     
+    local f_down = love.keyboard.isDown("f")
+    if ui.input_locked then
+        if not f_down then
+            ui.input_locked = false
+        end
+        for _, interact in ipairs(ui.worldspace_ui) do
+            interact.held = 0
+        end
+        return
+    end
+
     for i = #ui.worldspace_ui, 1, -1 do
         local interact = ui.worldspace_ui[i]
         if not interact.lock then
@@ -116,10 +127,11 @@ function ui.update(dt)
             else
                 interact.alpha = math.max(interact.alpha - FADE_SPEED * dt, 0)
             end
-            if love.keyboard.isDown("f") and inRange and isClosest then
+            if f_down and inRange and isClosest then
                 interact.held = interact.held + dt
                 if interact.held >= interact.holdTime then
                     interact.lock = true
+                    ui.input_locked = true
                     interact.callback()
                     
                     if interact.removeOnInteract then
