@@ -13,6 +13,10 @@ local editorCameraTarget = { x = 0, y = 0 }
 local weEdit = ""
 local diffFolder = ""
 
+local lastLevel = ""
+local lastFolder = ""
+local lastModTime = 0
+
 --// other
 function editor.start(whatAreWeEditing)
     love.mouse.setVisible(true)
@@ -31,12 +35,28 @@ function editor.update(dt)
     camera.setTarget(editorCameraTarget)
     camera.update(dt)
     world.update(dt)
-    gameplay.loadLevel(weEdit, diffFolder) 
+
+    local modulepath = diffFolder:gsub("%.", "/").. weEdit..".lua"
+    if weEdit == lastLevel then
+        local inf = love.filesystem.getInfo(modulepath)
+        if inf and inf.modtime ~= lastModTime then
+            lastModTime = inf.modtime
+            gameplay.loadLevel(weEdit)
+        end
+    else
+        gameplay.loadLevel(weEdit, diffFolder)
+        local inf = love.filesystem.getInfo(modulepath)
+        if not inf then return end
+        lastModTime = inf.modtime
+        lastLevel = weEdit
+        lastFolder = diffFolder
+    end
 end
 
 function editor.ui(fldr, y)
     y = y or 0
     local files = love.filesystem.getDirectoryItems(fldr)
+    table.sort(files)
     local mx,my = love.mouse.getPosition()
     local clicked = love.mouse.isDown(1)
     
@@ -48,7 +68,7 @@ function editor.ui(fldr, y)
         
         if info and info.type == "file" then
             if isHover and clicked then
-                weEdit = v:gsub(".lua", ""):gsub("/", ".")
+                weEdit = v:gsub("%.lua$", ""):gsub("/", ".")
                 diffFolder = (fldr.."."):gsub("/", ".")
             end
             love.graphics.setColor(0.3, 0.3, 0.3)

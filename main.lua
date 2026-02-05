@@ -23,11 +23,12 @@ function love.draw()
     --// start drawing
     if not editorState then
          gameplay.draw()
-    else
-        editor.draw()
     end
     --// finish drawing
     push:finish()
+    if editorState then
+        editor.draw()
+    end
 end
 
 function love.keypressed(key)

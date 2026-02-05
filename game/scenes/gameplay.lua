@@ -25,7 +25,7 @@ end
 
 function gameplay.loadLevel(levelName, diffFolder)
     assert(levelName)
-    modules["state"].world["Enviroment"]["Objects"] = {}
+    modules["world"].clear()
     modules["worldspace"].clear_worldspace_ui()
     
     local modulePath
@@ -38,6 +38,7 @@ function gameplay.loadLevel(levelName, diffFolder)
     local loaded_level = require(modulePath)
     
     modules["state"].world["CurrentLevel"] = levelName
+    print(levelName)
     loaded_level.load()
 end
 
