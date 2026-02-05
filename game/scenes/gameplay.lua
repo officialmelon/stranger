@@ -23,12 +23,17 @@ function gameplay.init()
     modules["intruder"].init()
 end
 
-function gameplay.loadLevel(levelName)
+function gameplay.loadLevel(levelName, diffFolder)
     assert(levelName)
     modules["state"].world["Enviroment"]["Objects"] = {}
     modules["worldspace"].clear_worldspace_ui()
     
-    local modulePath = "game.levels." .. levelName
+    local modulePath
+    if diffFolder and #diffFolder >= 1 then
+        modulePath = diffFolder .. levelName
+    else
+        modulePath = "game.levels." .. levelName
+    end
     package.loaded[modulePath] = nil
     local loaded_level = require(modulePath)
     
