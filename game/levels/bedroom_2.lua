@@ -16,6 +16,7 @@ local painting = require("game.objects.painting")
 local cabinet = require("game.objects.cabinet")
 local vent = require("game.objects.vent")
 local plants = require("game.objects.plants")
+local crt = require("game.objects.crt")
 
 local screwdriver = require("game.objects.items.screwdriver")
 
@@ -36,8 +37,10 @@ function level.load()
     wall.create(0, -15)
     wall.create(1175, -17)
     floor.create(0, 625, 1000)
-    window.create(130, 275)
-    painting.create(900, 275)
+
+    window.create(900, 275)
+
+    crt.create(200, 330, "crt_off")
 
     plants.create(25,350)
 end

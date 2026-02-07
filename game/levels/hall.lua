@@ -50,7 +50,7 @@ function level.load()
     couch.create(2000, 425)
 
     mug.create(2600, 465, true)
-    staircase.create(-650, 100, "bedroom_2", false, {x=500,y=475})
+    staircase.create(-650, 100, "upstairs_hall", false, {x=-500,y=475})
 
 end
 

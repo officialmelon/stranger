@@ -5,7 +5,7 @@ local editor = require("game.scenes.editor")
 local camera = require("game.systems.camera")
 local gameplay = require("game.scenes.gameplay")
 
-local editorState = true
+local editorState = false
 
 function love.load()
     love.mouse.setVisible(false)

@@ -10,6 +10,7 @@ return {
         ["VENT_PROMPT"] = "Enter",
         ["STAIRS_PROMPT"] = "Go Upstairs",
         ["PUSH_INTRUDER_HOLD_PROMPT"] = "Push (Spam)",
+        ["MAKE_NOISE_PROMPT"] = "Make Noise";
 
         ["VENT_UNSCREW_PROMPT"] = "Open vent",
         ["DIAL_911_SMARTPHONE"] = "crap... no battery",
