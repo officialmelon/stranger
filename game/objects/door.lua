@@ -21,6 +21,7 @@ function Door.create(x, y, level_name, locked, x_y_spawn)
     local currentRoom = state.world["CurrentLevel"]
     if currentRoom then
         intruderSystem.registerDoor(currentRoom, level_name, x, x_y_spawn)
+        intruderSystem.registerDoor(level_name, currentRoom, x_y_spawn.x, {x = x, y = x_y_spawn.y})
     end
     local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 2.5, 3)
 
@@ -31,6 +32,7 @@ function Door.create(x, y, level_name, locked, x_y_spawn)
         end
 
         player.setState("isHiding", true)
+        state.world["CurrentLevel"] = level_name
 
         print("door")
 

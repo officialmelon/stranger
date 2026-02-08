@@ -109,7 +109,6 @@ end
 function World.clear()
     state.world["Enviroment"]["Objects"] = {}
     state.world.windows = {}
-    state.intruder.roomGraph = {}
 end
 
 function World.update(dt)

@@ -24,10 +24,19 @@ local grabSpamAmount = 0
 local grabSpamPrompt = nil
 local stunningTimer = 0
 
+--[[
+quick explanation of states,
+following is when following the player,
+search is when the intruder is searching for the player,
+wonder is when the intruder is wandering around the room,
+topoint is when the intruder is going to a specific point in the room or another room, (e.g. sound in one room.)
+]]
+
 local STATES = {
     ["FOLLOWING"] = "FOLLOWING",
     ["SEARCH"] = "SEARCH",
-    ["WONDER"] = "WONDER"
+    ["WONDER"] = "WONDER",
+    ["DISTRACTED"] = "DISTRACTED"
 }
 
 local function setAnimation(name)
@@ -96,6 +105,12 @@ function intruder.findPathToRoom(fromRoom, toRoom)
     return nil
 end
 
+function intruder.gotoPoint(room, pos) --// x pos
+    wonderTargetRoom = room
+    wonderTargetX = pos
+    intruderState.currentState = STATES["DISTRACTED"]
+end
+
 function intruder.wonder(dt)
     if wonderWaitTimer > 0 then
         wonderWaitTimer = wonderWaitTimer - dt
@@ -124,29 +139,67 @@ function intruder.wonder(dt)
                 intruderState.x = newX
             else
                 wonderTargetX = nil
-                wonderWaitTimer = 18
+                wonderWaitTimer = math.random(3,6)
             end
         else
             wonderTargetX = nil
-            wonderWaitTimer = 18
+            wonderWaitTimer = math.random(3,6)
         end
         return
     end
 
-    if math.random() < 0.3 then
+    if math.random() < 0.5 then
         local rooms = {}
         for room, _ in pairs(intruderState.roomGraph) do
             if room ~= intruderState.currentRoom then table.insert(rooms, room) end
         end
         if #rooms > 0 then
             wonderTargetRoom = rooms[math.random(#rooms)]
-            wonderTargetX = math.random(200, 800)
+            wonderTargetX = math.random(100, 900)
         end
     else
-        local maxX = intruderState.currentRoom == "hall" and 2800 or 1000
+        local maxX = intruderState.currentRoom == "hall" and 2800 or 900
         wonderTargetX = math.random(100, maxX)
         wonderTargetRoom = nil
     end
+end
+
+function intruder.distractedBehavior(dt)
+    if wonderTargetRoom and intruderState.currentRoom ~= wonderTargetRoom then
+        local nextDoor = intruder.findPathToRoom(intruderState.currentRoom, wonderTargetRoom)
+        if nextDoor then
+            intruder.moveTowardsDoor(dt, nextDoor)
+        else
+            wonderTargetRoom = nil
+            wonderTargetX = nil
+            intruderState.currentState = STATES["WONDER"]
+        end
+        return
+    end
+
+    if wonderTargetX then
+        local dx = intruderState.speed * dt
+        if math.abs(wonderTargetX - intruderState.x) > 10 then
+            intruderState.facingRight = wonderTargetX > intruderState.x
+            local direction = intruderState.facingRight and 1 or -1
+            local newX = intruderState.x + dx * direction
+            setAnimation("Walk")
+            if not world.checkCollision(newX, intruderState.y, intruderState.width, intruderState.height) then
+                intruderState.x = newX
+            else
+                wonderTargetX = nil
+                wonderTargetRoom = nil
+                intruderState.currentState = STATES["WONDER"]
+            end
+        else
+            wonderTargetX = nil
+            wonderTargetRoom = nil
+            intruderState.currentState = STATES["WONDER"]
+        end
+        return
+    end
+
+    intruderState.currentState = STATES["WONDER"]
 end
 
 function intruder.update(dt)
@@ -160,7 +213,7 @@ function intruder.update(dt)
     
     local canSeePlayer = false
     local distToPlayer = math.huge
-    
+
     if myRoom == playerRoom and not state.player.isHiding then
         local intruderCenterX = intruderState.x + intruderState.width / 2
         local intruderCenterY = intruderState.y + intruderState.height / 2
@@ -179,10 +232,10 @@ function intruder.update(dt)
             
             for i = 1, steps do
                 local t = i / steps
-                local checkX = intruderCenterX + dx * t - intruderState.width / 2
-                local checkY = intruderCenterY + dy * t - intruderState.height / 2
+                local checkX = intruderCenterX + dx * t - 5
+                local checkY = intruderCenterY + dy * t - 5
                 
-                if world.checkCollision(checkX, checkY, intruderState.width, intruderState.height) then
+                if world.checkCollision(checkX, checkY, 10, 10) then
                     canSeePlayer = false
                     break
                 end
@@ -219,7 +272,9 @@ function intruder.update(dt)
         wonderTargetX, wonderTargetRoom, wonderWaitTimer = nil, nil, 0
         doorTimer = 0
         intruder.chasePlayer(dt)
-    elseif myRoom ~= playerRoom and not state.player.isHiding then
+    elseif intruderState.currentState == STATES["DISTRACTED"] then
+        intruder.distractedBehavior(dt)
+    elseif myRoom ~= playerRoom then
         local nextDoor = intruder.findPathToRoom(myRoom, playerRoom)
         if nextDoor then
             intruderState.currentState = STATES["SEARCH"]
@@ -237,6 +292,9 @@ end
 
 function intruder.grabPlayer()
     state.player.isAbleToMove = false
+    
+    intruderState.facingRight = state.player.x > intruderState.x
+    state.player.facingRight = intruderState.x > state.player.x
     
     if not grabSpamPrompt then
         grabSpamPrompt = worldui.create_interact_worldspace_ui(

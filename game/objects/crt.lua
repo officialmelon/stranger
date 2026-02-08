@@ -4,6 +4,8 @@ local world = require("game.systems.world")
 local worldspace = require("ui.worldspace")
 local state = require("state.state")
 
+local intruder = require("game.systems.intruder")
+
 local Crt = {}
 
 local img = utils.setup_img("assets/sprites/enviroment/crt/crt_behind.png")
@@ -16,11 +18,12 @@ local sprites = {
     ["crt_on"] = world.createObject(img3)
 }
 
-function Crt.create(x, y, type)
+function Crt.create(x, y, type, currentLevel)
     local instance = world.insertObjectIntoEnviroment(sprites[type] or sprites["crt_off"], x, y, 1, 3)
 
-    local function onActivate() --// TODO: Implement noise to point logic.
+    local function onActivate()
         instance.obj = sprites["crt_on"]
+        intruder.gotoPoint(currentLevel, x)
     end
 
     if instance.obj == sprites["behind"] then --// no sprite/system for that.
@@ -28,7 +31,7 @@ function Crt.create(x, y, type)
     end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["MAKE_NOISE_PROMPT"], 30, 0.75, onActivate, true)
+    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["MAKE_NOISE_PROMPT"], 200, 0.75, onActivate, true)
 end
 
 return Crt

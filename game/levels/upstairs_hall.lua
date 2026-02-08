@@ -38,9 +38,10 @@ function level.load()
     door.create(0, 305, "bathroom", false, {x=25,y=475})
 
     wardrobe.create(800, 200)
-    dresser.create(-500, 470, true)
 
     painting.create(270, 250)
+
+    staircase.create(-995, 107, "hall", false, {x=-650,y=475}, true, true)
 
     wall.create(-1000, -15)
     wall.create(1755, -17)

@@ -40,7 +40,7 @@ function level.load()
 
     window.create(900, 275)
 
-    crt.create(200, 330, "crt_off")
+    crt.create(200, 330, "crt_off", "bedroom_2")
 
     plants.create(25,350)
 end
