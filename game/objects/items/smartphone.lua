@@ -13,10 +13,15 @@ local sprites = {
 }
 
 function smartphone.create(x, y, storyOrDecoration)
+    local stateKey = "item_smartphone_" .. x .. "_" .. y
+    if world.getPersistentState(stateKey) == "collected" then
+        return
+    end
     
     local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 0.25, 3, nil)
 
     local function onPickup()
+        world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),

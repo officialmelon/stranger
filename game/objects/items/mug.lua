@@ -13,10 +13,15 @@ local sprites = {
 }
 
 function Mug.create(x, y, storyOrDecoration) -- true if story, false if not.
+    local stateKey = "item_mug_" .. x .. "_" .. y
+    if world.getPersistentState(stateKey) == "collected" then
+        return
+    end
 
     local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 1.5, 5)
     
     local function onPickup()
+        world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),

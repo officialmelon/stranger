@@ -19,10 +19,15 @@ local sprites = {
 }
 
 function Crt.create(x, y, type, currentLevel)
-    local instance = world.insertObjectIntoEnviroment(sprites[type] or sprites["crt_off"], x, y, 1, 3)
+    local stateKey = "crt_" .. x .. "_" .. y
+    local savedType = world.getPersistentState(stateKey)
+    local activeType = savedType or type
+
+    local instance = world.insertObjectIntoEnviroment(sprites[activeType] or sprites["crt_off"], x, y, 1, 3)
 
     local function onActivate()
         instance.obj = sprites["crt_on"]
+        world.setPersistentState(stateKey, "crt_on")
         intruder.gotoPoint(currentLevel, x)
     end
 

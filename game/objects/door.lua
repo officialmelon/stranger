@@ -12,18 +12,20 @@ local intruderSystem = require("game.systems.intruder")
 local Door = {}
 
 local img_closed = utils.setup_img("assets/sprites/enviroment/door/door_closed.png")
+local img_arch = utils.setup_img("assets/sprites/enviroment/door/door_arch.png")
 
 local sprites = {
-    ["closed"] = world.createObject(img_closed)
+    ["closed"] = world.createObject(img_closed),
+    ["arch"] = world.createObject(img_arch)
 }
 
-function Door.create(x, y, level_name, locked, x_y_spawn)
+function Door.create(x, y, level_name, locked, x_y_spawn, archway)
     local currentRoom = state.world["CurrentLevel"]
     if currentRoom then
         intruderSystem.registerDoor(currentRoom, level_name, x, x_y_spawn)
         intruderSystem.registerDoor(level_name, currentRoom, x_y_spawn.x, {x = x, y = x_y_spawn.y})
     end
-    local instance = world.insertObjectIntoEnviroment(sprites["closed"], x, y, 2.5, 3)
+    local instance = world.insertObjectIntoEnviroment(archway and sprites["arch"] or sprites["closed"], x, y, 2.5, 3)
 
     local function onInteract()
         if locked then

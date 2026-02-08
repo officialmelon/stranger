@@ -61,6 +61,17 @@ effects.effect_table = {
                 gameHeight / 2 - effects.effect_table.vingette.obj:getHeight() / 2
             )
         end
+    },
+    flash = {
+        enabled = true,
+        intensity = 0,
+        draw = function()
+            if effects.effect_table.flash.intensity > 0 then
+                love.graphics.setColor(1, 1, 1, effects.effect_table.flash.intensity)
+                love.graphics.rectangle("fill", 0, 0, gameWidth, gameHeight)
+                effects.effect_table.flash.intensity = math.max(0, effects.effect_table.flash.intensity - love.timer.getDelta() * 2)
+            end
+        end
     }
 }
 

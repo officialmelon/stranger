@@ -13,10 +13,15 @@ local sprites = {
 }
 
 function Screwdriver.create(x, y)
+    local stateKey = "item_screwdriver_" .. x .. "_" .. y
+    if world.getPersistentState(stateKey) == "collected" then
+        return
+    end
     
     local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 1.25, 3, nil)
 
     local function onInteract()
+        world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),

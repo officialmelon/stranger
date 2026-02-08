@@ -139,4 +139,20 @@ function World.draw()
     end
 end
 
+function World.setPersistentState(key, value)
+    local level = state.world["CurrentLevel"]
+    if not state.world["PersistentState"][level] then
+        state.world["PersistentState"][level] = {}
+    end
+    state.world["PersistentState"][level][key] = value
+end
+
+function World.getPersistentState(key)
+    local level = state.world["CurrentLevel"]
+    if state.world["PersistentState"][level] then
+        return state.world["PersistentState"][level][key]
+    end
+    return nil
+end
+
 return World

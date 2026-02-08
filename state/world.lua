@@ -33,5 +33,7 @@ return {
 
     ["CurrentLevel"] = nil,
 
-    isEditMode = false
+    isEditMode = false,
+
+    ["PersistentState"] = {}
 }

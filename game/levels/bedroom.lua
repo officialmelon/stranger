@@ -16,8 +16,13 @@ local painting = require("game.objects.painting")
 local cabinet = require("game.objects.cabinet")
 local vent = require("game.objects.vent")
 
+local polaroid = require("game.objects.items.polaroid")
 local smartphone = require("game.objects.items.smartphone")
 local screwdriver = require("game.objects.items.screwdriver")
+local torch = require("game.objects.items.torch")
+local key = require("game.objects.items.key")
+
+local safe = require("game.objects.safe")
 
 local level = {}
 
@@ -31,6 +36,11 @@ function level.load()
     --// map creation
 
     screwdriver.create(445, 450)
+    polaroid.create(525, 450)
+    torch.create(600, 450)
+    key.create(675, 450)
+
+    safe.create(445, 450)
 
     dresser.create(445, 470, true)
     door.create(1000, 305, "hall", true, {x=1500,y=475})

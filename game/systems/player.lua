@@ -141,6 +141,17 @@ function player.keypressed(key)
     end
 end
 
+function player.mousepressed(x, y, button)
+    if state.player.isHiding then return end
+    local equipped = state.player.equippedItem
+    if equipped and button == 1 then
+        local itemMod = require("game.objects.items." .. equipped.name)
+        if itemMod.use then
+            itemMod.use()
+        end
+    end
+end
+
 function player.update(dt)
 
     state.player.px = state.player.x + state.player.width / 2

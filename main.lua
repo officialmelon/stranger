@@ -48,7 +48,8 @@ function love.update(dt)
     end
 end
 
-function love.wheelmoved(x, y)
-    if not editorState then return end
-    editor.wheelmoved(x,y)
+function love.mousepressed(x, y, button)
+    if not editorState then
+        gameplay.mousepressed(x, y, button)
+    end
 end

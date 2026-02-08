@@ -209,7 +209,7 @@ function intruder.update(dt)
     local playerRoom = state.world["CurrentLevel"]
     local myRoom = intruderState.currentRoom
     
-    if sprite then sprite:update(dt) end
+    if sprite and stunningTimer <= 0 then sprite:update(dt) end
     
     local canSeePlayer = false
     local distToPlayer = math.huge
@@ -376,6 +376,10 @@ end
 
 function intruder.setPosition(x, y)
     state.intruder.x, state.intruder.y = x, y
+end
+
+function intruder.stun(duration)
+    stunningTimer = duration
 end
 
 function intruder.setRoom(roomName)

@@ -61,6 +61,10 @@ function gameplay.keypressed(key)
     modules["player"].keypressed(key)
 end
 
+function gameplay.mousepressed(x, y, button)
+    modules["player"].mousepressed(x, y, button)
+end
+
 function gameplay.update(dt)
     modules["camera"].setTarget(modules["player"].getCameraTarget())
     modules["fade"].update(dt)
