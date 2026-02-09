@@ -1,46 +1,42 @@
 local intruder = {}
 
-local state = require("state.state")
-local world = require("game.systems.world")
-local fade = require("ui.fade")
-local peachy = require("libraries.peachy")
-local utils = require("utils.utils")
-local worldui = require("ui.worldspace")
-local player = require("game.systems.player")
+local state    = require("state.state")
+local world    = require("game.systems.world")
+local fade     = require("ui.fade")
+local peachy   = require("libraries.peachy")
+local utils    = require("utils.utils")
+local worldui  = require("ui.worldspace")
+local player   = require("game.systems.player")
+local mic      = require("game.systems.mic")
 
-local intruderState = nil
-local sprite = nil
-local scale = 0.65
-local doorTimer = 0
-local DOOR_WAIT_TIME = 2.5
-
-local wonderTargetX = nil
-local wonderTargetRoom = nil
-local wonderWaitTimer = 0
-
-
-local grabSpamMaxAmount = math.random(9,15)
-local grabSpamAmount = 0
-local grabSpamPrompt = nil
-local stunningTimer = 0
-
---[[
-quick explanation of states,
-following is when following the player,
-search is when the intruder is searching for the player,
-wonder is when the intruder is wandering around the room,
-topoint is when the intruder is going to a specific point in the room or another room, (e.g. sound in one room.)
-]]
+local intruderState    = nil
+local sprite           = nil
+local scale            = 0.65
+local doorTimer        = 0
+local DOOR_WAIT_TIME   = 2.0
+local grabSpamMaxAmount = 14
+local grabSpamAmount   = 0
+local grabSpamPrompt   = nil
+local stunningTimer    = 0
+local lastKnownX       = nil
+local lastKnownRoom    = nil
+local searchTimer      = 0
+local patrolTimer      = 0
+local hearingRadius    = 500
+local visionDistance   = 800
 
 local STATES = {
-    ["FOLLOWING"] = "FOLLOWING",
-    ["SEARCH"] = "SEARCH",
-    ["WONDER"] = "WONDER",
-    ["DISTRACTED"] = "DISTRACTED"
+    IDLE        = "IDLE",
+    PATROL      = "PATROL",
+    CHASE       = "CHASE",
+    INVESTIGATE = "INVESTIGATE",
+    SEARCH_ROOM = "SEARCH_ROOM",
+    DISTRACTED  = "DISTRACTED"
 }
 
 local function setAnimation(name)
     if not intruderState then return end
+
     if intruderState.currentAnim ~= name then
         intruderState.currentAnim = name
         sprite:setTag(name)
@@ -50,23 +46,30 @@ end
 
 function intruder.init()
     intruderState = state.intruder
+    intruderState.currentState = STATES.PATROL
     intruderState.currentAnim = "Walk"
     intruderState.facingRight = false
+
     sprite = peachy.new("assets/sprites/intruder/intruder.json", utils.setup_img("assets/sprites/intruder/intruder.png"), "Walk")
     sprite:play()
 end
 
 function intruder.registerDoor(fromRoom, toRoom, doorX, spawnPos)
     local s = state.intruder
-    if not s.roomGraph[fromRoom] then s.roomGraph[fromRoom] = {} end
-    
-    for _, conn in ipairs(s.roomGraph[fromRoom]) do
-        if conn.target == toRoom and math.abs(conn.doorX - doorX) < 1 then return end
+
+    if not s.roomGraph[fromRoom] then 
+        s.roomGraph[fromRoom] = {} 
     end
-    
+
+    for _, conn in ipairs(s.roomGraph[fromRoom]) do
+        if conn.target == toRoom and math.abs(conn.doorX - doorX) < 1 then 
+            return 
+        end
+    end
+
     table.insert(s.roomGraph[fromRoom], {
         target = toRoom,
-        doorX = doorX,
+        doorX  = doorX,
         spawnX = spawnPos.x,
         spawnY = spawnPos.y
     })
@@ -74,27 +77,31 @@ end
 
 function intruder.findPathToRoom(fromRoom, toRoom)
     if fromRoom == toRoom then return nil end
+
     local s = state.intruder
     local visited = {}
-    local queue = {{room = fromRoom, path = {}}}
-    
+    local queue   = {{room = fromRoom, path = {}}}
+
     while #queue > 0 do
         local current = table.remove(queue, 1)
-        
+
         if current.room == toRoom then 
             return current.path[1] 
         end
-        
+
         if not visited[current.room] then
             visited[current.room] = true
             local connections = s.roomGraph[current.room]
+
             if connections then
                 for _, conn in ipairs(connections) do
                     if not visited[conn.target] then
                         local newPath = {}
-                        for _, p in ipairs(current.path) do
-                            table.insert(newPath, p)
+
+                        for _, p in ipairs(current.path) do 
+                            table.insert(newPath, p) 
                         end
+
                         table.insert(newPath, conn)
                         table.insert(queue, {room = conn.target, path = newPath})
                     end
@@ -102,288 +109,288 @@ function intruder.findPathToRoom(fromRoom, toRoom)
             end
         end
     end
+
     return nil
 end
 
-function intruder.gotoPoint(room, pos) --// x pos
-    wonderTargetRoom = room
-    wonderTargetX = pos
-    intruderState.currentState = STATES["DISTRACTED"]
+function intruder.canSeePlayer()
+    local pRoom = state.world["CurrentLevel"]
+    local iRoom = intruderState.currentRoom
+
+    if iRoom ~= pRoom or state.player.isHiding then 
+        return false, math.huge 
+    end
+
+    local ix, iy = intruderState.x + intruderState.width / 2, intruderState.y + intruderState.height / 2
+    local px, py = state.player.x + state.player.width / 2, state.player.y + state.player.height / 2
+    local dx, dy = px - ix, py - iy
+    local dist   = math.sqrt(dx*dx + dy*dy)
+
+    if dist > visionDistance then 
+        return false, dist 
+    end
+
+    local facing = intruderState.facingRight and 1 or -1
+
+    if (dx * facing) < -100 then 
+        return false, dist 
+    end
+
+    local steps = math.ceil(dist / 15)
+
+    for i = 1, steps do
+        local t = i / steps
+        if world.checkCollision(ix + dx * t - 5, iy + dy * t - 5, 10, 10) then 
+            return false, dist 
+        end
+    end
+
+    return true, dist
 end
 
-function intruder.wonder(dt)
-    if wonderWaitTimer > 0 then
-        wonderWaitTimer = wonderWaitTimer - dt
-        setAnimation("Idle")
-        return
+function intruder.checkHearing()
+    local pRoom = state.world["CurrentLevel"]
+
+    if intruderState.currentRoom ~= pRoom then 
+        return false 
     end
 
-    if wonderTargetRoom and intruderState.currentRoom ~= wonderTargetRoom then
-        local nextDoor = intruder.findPathToRoom(intruderState.currentRoom, wonderTargetRoom)
-        if nextDoor then
-            intruder.moveTowardsDoor(dt, nextDoor)
-        else
-            wonderTargetRoom = nil
-        end
-        return
+    local micVol  = mic and mic.getMicVolume() or 0
+    local moveVol = (state.player.isMoving and not state.player.isCrouching) and 0.4 or 0
+
+    if state.player.isRunning then 
+        moveVol = 1.0 
     end
 
-    if wonderTargetX then
-        local dx = intruderState.speed * dt
-        if math.abs(wonderTargetX - intruderState.x) > 10 then
-            intruderState.facingRight = wonderTargetX > intruderState.x
-            local direction = intruderState.facingRight and 1 or -1
-            local newX = intruderState.x + dx * direction
-            setAnimation("Walk")
-            if not world.checkCollision(newX, intruderState.y, intruderState.width, intruderState.height) then
-                intruderState.x = newX
-            else
-                wonderTargetX = nil
-                wonderWaitTimer = math.random(3,6)
-            end
-        else
-            wonderTargetX = nil
-            wonderWaitTimer = math.random(3,6)
-        end
-        return
+    local noise = (micVol * 15) + moveVol
+
+    if noise < 0.2 then 
+        return false 
     end
 
-    if math.random() < 0.5 then
-        local rooms = {}
-        for room, _ in pairs(intruderState.roomGraph) do
-            if room ~= intruderState.currentRoom then table.insert(rooms, room) end
-        end
-        if #rooms > 0 then
-            wonderTargetRoom = rooms[math.random(#rooms)]
-            wonderTargetX = math.random(100, 900)
-        end
-    else
-        local maxX = intruderState.currentRoom == "hall" and 2800 or 900
-        wonderTargetX = math.random(100, maxX)
-        wonderTargetRoom = nil
-    end
-end
+    local dist = math.huge
 
-function intruder.distractedBehavior(dt)
-    if wonderTargetRoom and intruderState.currentRoom ~= wonderTargetRoom then
-        local nextDoor = intruder.findPathToRoom(intruderState.currentRoom, wonderTargetRoom)
-        if nextDoor then
-            intruder.moveTowardsDoor(dt, nextDoor)
-        else
-            wonderTargetRoom = nil
-            wonderTargetX = nil
-            intruderState.currentState = STATES["WONDER"]
-        end
-        return
+    if state.player.x then 
+        dist = math.abs(state.player.x - intruderState.x) 
     end
 
-    if wonderTargetX then
-        local dx = intruderState.speed * dt
-        if math.abs(wonderTargetX - intruderState.x) > 10 then
-            intruderState.facingRight = wonderTargetX > intruderState.x
-            local direction = intruderState.facingRight and 1 or -1
-            local newX = intruderState.x + dx * direction
-            setAnimation("Walk")
-            if not world.checkCollision(newX, intruderState.y, intruderState.width, intruderState.height) then
-                intruderState.x = newX
-            else
-                wonderTargetX = nil
-                wonderTargetRoom = nil
-                intruderState.currentState = STATES["WONDER"]
-            end
-        else
-            wonderTargetX = nil
-            wonderTargetRoom = nil
-            intruderState.currentState = STATES["WONDER"]
-        end
-        return
+    if dist < (hearingRadius * noise) then 
+        return true, state.player.x 
     end
 
-    intruderState.currentState = STATES["WONDER"]
+    return false
 end
 
 function intruder.update(dt)
-    intruderState = state.intruder
-    if not intruderState.active then return end
-    
-    local playerRoom = state.world["CurrentLevel"]
-    local myRoom = intruderState.currentRoom
-    
-    if sprite and stunningTimer <= 0 then sprite:update(dt) end
-    
-    local canSeePlayer = false
-    local distToPlayer = math.huge
+    if not intruderState or not intruderState.active then return end
 
-    if myRoom == playerRoom and not state.player.isHiding then
-        local intruderCenterX = intruderState.x + intruderState.width / 2
-        local intruderCenterY = intruderState.y + intruderState.height / 2
-        local playerCenterX = state.player.x + state.player.width / 2
-        local playerCenterY = state.player.y + state.player.height / 2
-        
-        local dx = playerCenterX - intruderCenterX
-        local dy = playerCenterY - intruderCenterY
-        distToPlayer = math.sqrt(dx * dx + dy * dy)
-        
-        local playerIsInFront = (intruderState.facingRight and dx > 0) or (not intruderState.facingRight and dx < 0)
-        
-        if playerIsInFront and distToPlayer < 800 then
-            local steps = math.ceil(distToPlayer / 10)
-            canSeePlayer = true
-            
-            for i = 1, steps do
-                local t = i / steps
-                local checkX = intruderCenterX + dx * t - 5
-                local checkY = intruderCenterY + dy * t - 5
-                
-                if world.checkCollision(checkX, checkY, 10, 10) then
-                    canSeePlayer = false
-                    break
-                end
-            end
-        end
+    if sprite and stunningTimer <= 0 then 
+        sprite:update(dt) 
     end
-    
-    if distToPlayer < 110 and stunningTimer <= 0 then
-        intruder.grabPlayer()
-    elseif grabSpamPrompt then
-        worldui.remove_interact_worldspace_ui(grabSpamPrompt)
-        grabSpamPrompt = nil
-        state.player.isAbleToMove = true
-    end
-    
+
     if stunningTimer > 0 then
-        stunningTimer = stunningTimer - dt
-        setAnimation("Idle")
-    end
+        if grabSpamPrompt then
+            worldui.remove_interact_worldspace_ui(grabSpamPrompt)
+            grabSpamPrompt = nil
+            state.player.isAbleToMove = true
+        end
 
-    if grabSpamPrompt then
-        grabSpamPrompt.x = state.player.px
-        grabSpamPrompt.y = state.player.py
+        stunningTimer = stunningTimer - dt
         setAnimation("Idle")
         return
     end
 
-    if stunningTimer > 0 then return end
-    
-    local isChasing = intruderState.currentState == STATES["FOLLOWING"]
-    
-    if canSeePlayer or (isChasing and myRoom == playerRoom and not state.player.isHiding) then
-        intruderState.currentState = STATES["FOLLOWING"]
-        wonderTargetX, wonderTargetRoom, wonderWaitTimer = nil, nil, 0
-        doorTimer = 0
-        intruder.chasePlayer(dt)
-    elseif intruderState.currentState == STATES["DISTRACTED"] then
-        intruder.distractedBehavior(dt)
-    elseif myRoom ~= playerRoom then
-        local nextDoor = intruder.findPathToRoom(myRoom, playerRoom)
-        if nextDoor then
-            intruderState.currentState = STATES["SEARCH"]
-            wonderTargetX, wonderTargetRoom, wonderWaitTimer = nil, nil, 0
-            intruder.moveTowardsDoor(dt, nextDoor)
+    if grabSpamPrompt then
+        grabSpamPrompt.x, grabSpamPrompt.y = state.player.px, state.player.py
+        setAnimation("Idle")
+        return
+    end
+
+    local canSee, dist = intruder.canSeePlayer()
+    local heard, hX   = intruder.checkHearing()
+
+    if canSee then
+        intruderState.currentState = STATES.CHASE
+        lastKnownX, lastKnownRoom = state.player.x, state.world["CurrentLevel"]
+        intruderState.knowsHidingSpot = false
+    elseif heard and intruderState.currentState ~= STATES.CHASE then
+        intruderState.currentState = STATES.INVESTIGATE
+        lastKnownX, lastKnownRoom = hX, state.world["CurrentLevel"]
+    end
+
+    if intruderState.currentState == STATES.CHASE then
+        if canSee then
+            intruder.moveTowards(dt, state.player.x, 1.4)
+
+            if dist < 110 then 
+                intruder.grabPlayer() 
+            end
         else
-            intruderState.currentState = STATES["WONDER"]
-            intruder.wonder(dt)
+            searchTimer = 2
+            intruderState.currentState = STATES.SEARCH_ROOM
+        end
+
+    elseif intruderState.currentState == STATES.INVESTIGATE or intruderState.currentState == STATES.DISTRACTED then
+        if lastKnownRoom and intruderState.currentRoom ~= lastKnownRoom then
+            local door = intruder.findPathToRoom(intruderState.currentRoom, lastKnownRoom)
+
+            if door then 
+                intruder.moveTowardsDoor(dt, door) 
+            else 
+                intruderState.currentState = STATES.PATROL 
+            end
+
+        elseif lastKnownX then
+            if math.abs(intruderState.x - lastKnownX) > 20 then
+                intruder.moveTowards(dt, lastKnownX, 1.1)
+            else
+                searchTimer = 4
+                intruderState.currentState = STATES.SEARCH_ROOM
+            end
+        else
+            intruderState.currentState = STATES.PATROL
+        end
+
+    elseif intruderState.currentState == STATES.SEARCH_ROOM then
+        searchTimer = searchTimer - dt
+
+        if searchTimer <= 0 then
+            intruderState.currentState = STATES.PATROL
+        else
+            setAnimation("Idle")
+            if math.random() < 0.02 then 
+                intruderState.facingRight = not intruderState.facingRight 
+            end
+        end
+
+    elseif intruderState.currentState == STATES.PATROL then
+        patrolTimer = patrolTimer - dt
+
+        if patrolTimer <= 0 then
+            local rooms = {}
+
+            for r, _ in pairs(intruderState.roomGraph) do 
+                table.insert(rooms, r) 
+            end
+
+            if #rooms > 0 then
+                lastKnownRoom = rooms[math.random(#rooms)]
+                lastKnownX    = math.random(200, 800)
+                patrolTimer   = math.random(5, 15)
+                intruderState.currentState = STATES.INVESTIGATE
+            end
+        end
+
+        setAnimation("Idle")
+    end
+end
+
+function intruder.moveTowards(dt, tx, sm)
+    local s    = intruderState.speed * (sm or 1)
+    local step = s * dt
+
+    if math.abs(tx - intruderState.x) > 5 then
+        intruderState.facingRight = tx > intruderState.x
+        local nx = intruderState.x + (intruderState.facingRight and step or -step)
+        setAnimation("Walk")
+
+        if not world.checkCollision(nx, intruderState.y, intruderState.width, intruderState.height) then
+            intruderState.x = nx
+        else
+            searchTimer = 1.5
+            intruderState.currentState = STATES.SEARCH_ROOM
         end
     else
-        intruderState.currentState = STATES["WONDER"]
-        intruder.wonder(dt)
+        setAnimation("Idle")
+    end
+end
+
+function intruder.moveTowardsDoor(dt, door)
+    if math.abs(door.doorX - intruderState.x) > 20 then
+        intruder.moveTowards(dt, door.doorX, 1.0)
+    else
+        setAnimation("Idle")
+        doorTimer = doorTimer + dt
+
+        if doorTimer >= DOOR_WAIT_TIME then
+            intruderState.currentRoom = door.target
+            intruderState.x, intruderState.y = door.spawnX, door.spawnY
+            doorTimer = 0
+        end
     end
 end
 
 function intruder.grabPlayer()
+    if stunningTimer > 0 or grabSpamPrompt then return end
+
+    if intruderState.knowsHidingSpot and state.player.isHiding and state.player.currentHidingSpot then
+        intruderState.knowsHidingSpot = false
+        state.player.currentHidingSpot.exit()
+    end
+
     state.player.isAbleToMove = false
-    
     intruderState.facingRight = state.player.x > intruderState.x
-    state.player.facingRight = intruderState.x > state.player.x
-    
-    if not grabSpamPrompt then
-        grabSpamPrompt = worldui.create_interact_worldspace_ui(
-            state.player.px,
-            state.player.py,
-            state.translations[state.translations.currentLanguage]["PUSH_INTRUDER_HOLD_PROMPT"],
-            150,
-            0.025,
-            function ()
+    state.player.facingRight  = not intruderState.facingRight
+    grabSpamAmount = 0
+
+    grabSpamPrompt = worldui.create_interact_worldspace_ui(
+        state.player.px, 
+        state.player.py, 
+        state.translations[state.translations.currentLanguage]["PUSH_INTRUDER_HOLD_PROMPT"], 
+        150, 
+        0.025, 
+        function()
+            player.push()
+            grabSpamAmount = grabSpamAmount + 1
+
+            if grabSpamAmount >= grabSpamMaxAmount then
+                worldui.remove_interact_worldspace_ui(grabSpamPrompt)
                 grabSpamPrompt = nil
-                player.push()
-                grabSpamAmount = grabSpamAmount + 1
-                if grabSpamAmount >= grabSpamMaxAmount then
-                    state.player.isAbleToMove = true
-                    grabSpamAmount = 0
-                    stunningTimer = 2.5
-                end
-            end,
-            true
-        )
-    end
-end
-
-function intruder.chasePlayer(dt)
-    local targetX = state.player.x
-    local myX = intruderState.x
-    local dx = intruderState.speed * dt
-    
-    if math.abs(targetX - myX) > 5 then
-        intruderState.facingRight = targetX > myX
-        local direction = intruderState.facingRight and 1 or -1
-        local newX = myX + dx * direction
-        setAnimation("Walk")
-        if not world.checkCollision(newX, intruderState.y, intruderState.width, intruderState.height) then
-            intruderState.x = newX
-        end
-    else
-        setAnimation("Idle")
-    end
-end
-
-function intruder.moveTowardsDoor(dt, doorInfo)
-    local targetX = doorInfo.doorX
-    local myX = intruderState.x
-    local dx = intruderState.speed * dt
-    
-    if math.abs(targetX - myX) > 10 then
-        intruderState.facingRight = targetX > myX
-        local direction = intruderState.facingRight and 1 or -1
-        local newX = myX + dx * direction
-        setAnimation("Walk")
-        if not world.checkCollision(newX, intruderState.y, intruderState.width, intruderState.height) then
-            intruderState.x = newX
-        end
-    else
-        setAnimation("Idle")
-        doorTimer = doorTimer + dt
-        if doorTimer >= DOOR_WAIT_TIME then
-            intruder.transitionToRoom(doorInfo)
-        end
-    end
-end
-
-function intruder.transitionToRoom(doorInfo)
-    intruderState.currentRoom = doorInfo.target
-    intruderState.x = doorInfo.spawnX
-    intruderState.y = doorInfo.spawnY
-    doorTimer = 0
+                state.player.isAbleToMove = true
+                stunningTimer = 4.0
+            end
+        end, 
+        false
+    )
 end
 
 function intruder.draw()
-    intruderState = state.intruder
-    if not intruderState.active or intruderState.currentRoom ~= state.world["CurrentLevel"] or not sprite then return end
-    
-    local sx = intruderState.facingRight and scale or -scale
+    if not intruderState or not intruderState.active or intruderState.currentRoom ~= state.world["CurrentLevel"] or not sprite then return end
+
+    local sx   = intruderState.facingRight and scale or -scale
     local w, h = sprite:getWidth(), sprite:getHeight()
-    sprite:draw(intruderState.x + intruderState.width / 2, intruderState.y + intruderState.height / 2, 0, sx, scale, w / 2, h / 2)
+
+    sprite:draw(
+        intruderState.x + intruderState.width/2, 
+        intruderState.y + intruderState.height/2, 
+        0, 
+        sx, 
+        scale, 
+        w/2, 
+        h/2
+    )
 end
 
-function intruder.setPosition(x, y)
-    state.intruder.x, state.intruder.y = x, y
+function intruder.stun(d) stunningTimer = d end
+
+function intruder.setPosition(x, y) 
+    intruderState.x, intruderState.y = x, y 
 end
 
-function intruder.stun(duration)
-    stunningTimer = duration
+function intruder.setRoom(r) 
+    intruderState.currentRoom = r 
 end
 
-function intruder.setRoom(roomName)
-    state.intruder.currentRoom = roomName
+function intruder.gotoPoint(r, x) 
+    lastKnownRoom, lastKnownX, intruderState.currentState = r, x, STATES.DISTRACTED 
+end
+
+function intruder.onPlayerHide()
+    local see, _ = intruder.canSeePlayer()
+    if see then 
+        intruderState.knowsHidingSpot = true
+        intruder.gotoPoint(state.world.CurrentLevel, state.player.x) 
+    end
 end
 
 return intruder

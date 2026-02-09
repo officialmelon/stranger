@@ -12,5 +12,6 @@ return {
     active = true,
     
     roomGraph = {},
-    doors = {}
+    doors = {},
+    knowsHidingSpot = false
 }

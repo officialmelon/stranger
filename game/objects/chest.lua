@@ -3,6 +3,7 @@ local utils = require("utils.utils")
 local world = require("game.systems.world")
 local worldspace = require("ui.worldspace")
 local player = require("game.systems.player")
+local intruder = require("game.systems.intruder")
 local ui = require("ui.ui")
 local state = require("state.state")
 
@@ -28,6 +29,8 @@ function Chest.create(x, y)
         if isHidingInside then
             return
         end
+
+        intruder.onPlayerHide()
 
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["EXIT_HIDING"]),

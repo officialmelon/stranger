@@ -3,6 +3,7 @@ local utils = require("utils.utils")
 local world = require("game.systems.world")
 local worldspace = require("ui.worldspace")
 local player = require("game.systems.player")
+local intruder = require("game.systems.intruder")
 local ui = require("ui.ui")
 local state = require("state.state")
 local Bed = {}
@@ -31,9 +32,12 @@ function Bed.create(x, y, hasCollision, flipped)
         if isHidingInside then
             return
         end
+
+        intruder.onPlayerHide()
+
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["EXIT_HIDING"]),
-            love.graphics.getHeight() - 100,
+            720 - 100,
             state.translations[state.translations.currentLanguage]["EXIT_HIDING"])
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
         player.setState("isHiding", true)

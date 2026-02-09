@@ -33,9 +33,12 @@ function Wardrobe.create(x, y)
         if isHidingInside then
             return
         end
+
+        intruder.onPlayerHide()
+
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["EXIT_HIDING"]),
-            love.graphics.getHeight() - 100,
+            720 - 100,
             state.translations[state.translations.currentLanguage]["EXIT_HIDING"])
         state.world["Lighting"].vignetteSize = state.world["Lighting"].hideVignetteSize
         player.setState("isHiding", true)

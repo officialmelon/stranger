@@ -40,7 +40,6 @@ function level.load()
     torch.create(600, 450)
     key.create(675, 450)
 
-    safe.create(445, 450)
 
     dresser.create(445, 470, true)
     door.create(1000, 305, "hall", true, {x=1500,y=475})

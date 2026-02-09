@@ -26,7 +26,8 @@ return {
         ["EXAMINE_MUG"] = "huh? the mug... it has warm coffee? I haven't used this.",
         ["PICKUP_MUG"] = "Pickup Mug",
 
-        ["LOCKED_STAIRS"] = "The noise came from downstairs..."
+        ["LOCKED_STAIRS"] = "The noise came from downstairs...",
+        ["INTRUDER_SAW_YOU"] = "He saw you hide! Get out!"
     },
 
     currentLanguage = "English"
