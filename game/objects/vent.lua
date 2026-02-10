@@ -22,7 +22,7 @@ local sprites = {
 local vents = {}
 
 
-function Door.create(x, y, level_name, x_y_spawn, id)
+function Door.create(x, y, level_name, x_y_spawn, id, callback)
     local instance = world.insertObjectIntoEnviroment(sprites["vent"], x, y, 1, 5)
     local worldspace_ui = nil
 
@@ -42,6 +42,11 @@ function Door.create(x, y, level_name, x_y_spawn, id)
         if not state.player.equippedItem or state.player.equippedItem.name ~= "screwdriver" then
             local c = UI.displayText(utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["CANT_OPEN_VENT"]), 620, state.translations[state.translations.currentLanguage]["CANT_OPEN_VENT"], 2.5)
             return
+        end
+
+        if callback then
+            local tsk = UI.addTask(state.translations[state.translations.currentLanguage]["BEDROOM_INVESTIGATE"])
+            state.player.currentTask = tsk
         end
 
         worldspace.remove_interact_worldspace_ui(worldspace_ui)

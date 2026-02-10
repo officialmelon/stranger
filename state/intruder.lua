@@ -5,7 +5,7 @@ return {
     height = 60,
     speed = 125,
     
-    currentRoom = "hall",
+    currentRoom = "living_room",
     targetRoom = nil,
     targetDoor = nil,
     

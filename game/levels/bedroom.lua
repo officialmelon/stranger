@@ -44,8 +44,10 @@ function level.load()
 
     bed.create(5, 500, false, true)
     dresser.create(425, 475, false)
-    screwdriver.create(475, 460)
+    screwdriver.create(475, 460, true)
 
+    local tsk = ui.addTask(state.translations[state.translations.currentLanguage]["BEDROOM_INVESTIGATE"])
+    state.player.currentTask = tsk
 end
 
 function level.update(dt)

@@ -12,7 +12,7 @@ local sprites = {
     ["default"]   = world.createObject(img_open),
 }
 
-function Screwdriver.create(x, y)
+function Screwdriver.create(x, y, story)
     local stateKey = "item_screwdriver_" .. x .. "_" .. y
     if world.getPersistentState(stateKey) == "collected" then
         return
@@ -21,6 +21,12 @@ function Screwdriver.create(x, y)
     local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 1.25, 3, nil)
 
     local function onInteract()
+        if story then
+            ui.removeTask(state.player.currentTask)
+
+            local tsk = ui.addTask(state.translations[state.translations.currentLanguage]["UNLOCK_VENT_INVESTIGATE"])
+            state.player.currentTask = tsk
+        end
         world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(

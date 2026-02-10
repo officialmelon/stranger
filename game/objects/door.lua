@@ -46,7 +46,7 @@ function Door.create(x, y, level_name, locked, x_y_spawn, archway)
         end)
     end
 
-    worldspace.create_interact_worldspace_ui(x + ((archway and 150) or 75), y + 150, state.translations[state.translations.currentLanguage]["DOOR_PROMPT"], 15, 2, onInteract, true)
+    worldspace.create_interact_worldspace_ui(x + ((archway and 130) or 75), y + 150, state.translations[state.translations.currentLanguage]["DOOR_PROMPT"], 15, 2, onInteract, true)
 end
 
 return Door

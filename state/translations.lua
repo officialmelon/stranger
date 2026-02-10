@@ -14,6 +14,11 @@ return {
         ["DOWNSTAIRS_PROMPT"] = "Go Downstairs",
         ["SAFE_PROMPT"] = "Unlock Safe",
 
+        ["BEDROOM_INVESTIGATE"] = "Investigate your room...",
+        ["UNLOCK_VENT_INVESTIGATE"] = "Open the vent...",
+
+        ["NOISE_INVESTIGATE"] = "Investigate the strange noise...",
+
         ["VENT_UNSCREW_PROMPT"] = "Open vent",
         ["DIAL_911_SMARTPHONE"] = "crap... no battery",
         ["PICKUP_SCREWDRIVER"] = "Pickup Screwdriver",

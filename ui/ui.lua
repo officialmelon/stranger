@@ -28,6 +28,31 @@ local SLOT_H = slot:getHeight()
 local SLOT_INNER_W = SLOT_W - SLOT_PADDING * 2
 local SLOT_INNER_H = SLOT_H - SLOT_PADDING * 2
 
+local tasks = {}
+
+--// tasks
+
+function ui.addTask(text)
+    local task = {
+        text = text
+    }
+
+    table.insert(tasks, task)
+    return task
+end
+
+function ui.removeTask(task)
+    for i = #tasks, 1, -1 do
+        if tasks[i] == task then
+            table.remove(tasks, i)
+            return true
+        end
+    end
+    return false
+end
+
+--// others
+
 local function getDelayAfterChar(text, index)
     local char = string.sub(text, index, index)
     if char == "." or char == "?" then
@@ -124,7 +149,20 @@ local function drawTexts()
     end
 end
 
+local function drawTasks()
+    love.graphics.print("Tasks:", 1000, 720 /2.2)
+    love.graphics.rectangle("fill", 1000, 720 / 2, 200, 5)
+
+    local lh = 20
+    local sY = 720 / 1.95
+
+    for i = 1, #tasks do
+        love.graphics.printf(tasks[i].text, 1000, sY + (i - 1) * lh, 250)
+    end
+end
+
 function ui.draw()
+    drawTasks()
     drawSlots()
     drawStaminaBar()
     love.graphics.draw(pause, gameWidth - pause:getWidth(), 10)

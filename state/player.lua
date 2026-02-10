@@ -29,5 +29,7 @@ return {
     inventory = {},
     maxSlots = 5,
 
-    equippedItem = nil
+    equippedItem = nil,
+
+    currentTask = nil
 }
