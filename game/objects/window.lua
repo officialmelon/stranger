@@ -14,7 +14,7 @@ local sprites = {
 state.world.windows = state.world.windows or {}
 
 function Window.create(x, y)
-    world.insertObjectIntoEnviroment(sprites["animated"], x, y, 1, 3, nil)
+    world.insertObjectIntoEnviroment(sprites["animated"], x, y, 1, -1, nil)
     table.insert(state.world.windows, { x = x, y = y })
 end
 return Window

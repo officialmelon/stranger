@@ -33,21 +33,20 @@ function level.load()
 
     --// map creation
 
-    vent.create(270, 545, "bathroom", {x=190, y=475}, 3)
-    door.create(500, 305, "bedroom", false, {x=25,y=475})
-    door.create(0, 305, "bathroom", false, {x=25,y=475})
+    door.create(300, 305, "bedroom", true, {x=950,y=475})
+    door.create(900, 305, "bedroom_2", false, {x=100,y=475})
 
-    wardrobe.create(800, 200)
+    painting.create(610, 325)
 
-    painting.create(270, 250)
-
-    staircase.create(-995, 107, "hall", false, {x=-650,y=475}, true, true)
+    staircase.create(-995, 107, "downstairs_hall", false, {x=670,y=475}, true, true)
+    vent.create(620, 550, "upstairs_hall", {x=800,y=475})
 
     wall.create(-1000, -15)
     wall.create(1755, -17)
     floor.create(-1000, 625, 1500)
-    window.create(-750, 275)
-    window.create(1300, 275)
+    window.create(-100, 275)
+
+    window.create(1350, 275)
 
 end
 

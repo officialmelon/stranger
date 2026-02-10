@@ -4,8 +4,6 @@ local utils = require("utils.utils")
 local ui = require("ui.ui")
 local worldspace = require("ui.worldspace")
 local state = require("state.state")
-local crt   = require("game.objects.crt")
-local blood = require("game.objects.blood")
 
 local chest = require("game.objects.chest")
 local door = require("game.objects.door")
@@ -21,7 +19,8 @@ local vent = require("game.objects.vent")
 local couch = require("game.objects.couch")
 local staircase = require("game.objects.staircase")
 local wardrobe = require("game.objects.wardrobe")
-local screwdriver = require("game.objects.items.screwdriver")
+local table = require("game.objects.table")
+local chair = require("game.objects.chair")
 
 local mug = require("game.objects.items.mug")
 
@@ -36,20 +35,22 @@ function level.load()
 
     --// map creation
 
-    door.create(100, 310, "upstairs_hall", false, {x=900,y=475})
+    door.create(1000, 305, "downstairs_hall", false, {x=400,y=475}, true)
 
-    wall.create(0, -15)
-    wall.create(1575, -17)
-    floor.create(0, 625, 1500)
+    couch.create(0, 415)
 
-    bed.create(1185, 500, true)
-    dresser.create(750, 475, true)
-    window.create(1325, 275)
-    crt.create(935, 335, true)
-    plants.create(800, 352)
-    painting.create(450,275)
+    dresser.create(-165,485)
+    plants.create(-100, 365, "standing_pot")
 
-    blood.create(135, 400)
+    vent.create(-760,550, "bathroom", {x=185, y=475}, 7)
+
+    door.create(-950, 305, "bathroom", true, {x=10,y=475}, false)
+
+    window.create(-145,300)
+
+    wall.create(-1000, -15)
+    wall.create(1365, -17)
+    floor.create(-1000, 625, 1300)
 
 end
 

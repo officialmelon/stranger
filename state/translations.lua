@@ -27,7 +27,7 @@ return {
         ["PICKUP_MUG"] = "Pickup Mug",
 
         ["LOCKED_STAIRS"] = "The noise came from downstairs...",
-        ["INTRUDER_SAW_YOU"] = "He saw you hide! Get out!"
+        ["INTRUDER_SAW_YOU"] = "I think he saw me hiding..."
     },
 
     currentLanguage = "English"

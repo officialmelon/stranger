@@ -26,7 +26,7 @@ function Staircase.create(x, y, level_name, locked, x_y_spawn, isTop, hasCollisi
         height = imgIsTop:getHeight()
     } or nil
 
-    local instance = world.insertObjectIntoEnviroment(isTop and sprites["stairs_top"] or sprites["stairs"], x, y, 1, isTop and 4 or 0.9, nil, hasCollision and collisionBox or nil)
+    local instance = world.insertObjectIntoEnviroment(isTop and sprites["stairs_top"] or sprites["stairs"], x, y, isTop and 1 or 0.9, 5, nil, hasCollision and collisionBox or nil)
 
     local currentRoom = state.world["CurrentLevel"]
     if currentRoom then

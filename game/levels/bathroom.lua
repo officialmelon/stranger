@@ -19,7 +19,11 @@ local vent = require("game.objects.vent")
 local couch = require("game.objects.couch")
 local staircase = require("game.objects.staircase")
 local wardrobe = require("game.objects.wardrobe")
+local screwdriver = require("game.objects.items.screwdriver")
+
+local toilet = require("game.objects.toilet")
 local shower = require("game.objects.shower")
+local sink = require("game.objects.bathroom_sink")
 
 local mug = require("game.objects.items.mug")
 
@@ -34,14 +38,20 @@ function level.load()
 
     --// map creation
 
-    shower.create(800, 235)
+    door.create(10, 310, "living_room", true, {x=-950,y=475})
 
-    vent.create(190, 545, "upstairs_hall", {x=270, y=475}, 3)
-    door.create(25, 305, "upstairs_hall", false, {x=0,y=475})
+    vent.create(185, 550, "living_room", {x=-760,y=475}, 77)
+
+    sink.create(1055,375,nil, "bathroom")
+
+    toilet.create(850,415)
+
+    window.create(850, 300)
+    shower.create(400, 220)
 
     wall.create(0, -15)
     wall.create(1180, -17)
-    floor.create(0, 625, 850)
+    floor.create(0, 625, 900)
 
 end
 
