@@ -32,7 +32,16 @@ return {
         ["PICKUP_MUG"] = "Pickup Mug",
 
         ["LOCKED_STAIRS"] = "The noise came from downstairs...",
-        ["INTRUDER_SAW_YOU"] = "I think he saw me hiding..."
+        ["INTRUDER_SAW_YOU"] = "I think he saw me hiding...",
+
+        ["LANDLINE_PROMPT"] = "Use Phone",
+        ["LANDLINE_CUT"] = "The phone line... it's been cut.",
+        ["INVESTIGATE_LANDLINE"] = "Find a way to call for help...",
+        ["INVESTIGATE_FOR_ITEMS"] = "Look for something else around the house.",
+        ["SEARCH_FOR_SAFE"] = "I wonder where this goes?",
+
+        ["LOOK_FOR_CHARGER"] = "No battery... Look for a charger",
+        ["SAFE_OPENED"] = "There's something inside..."
     },
 
     currentLanguage = "English"

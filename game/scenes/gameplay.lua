@@ -27,6 +27,7 @@ function gameplay.loadLevel(levelName, diffFolder)
     assert(levelName)
     modules["world"].clear()
     modules["worldspace"].clear_worldspace_ui()
+    modules["ui"].clearTasks()
     
     local modulePath
     if diffFolder and #diffFolder >= 1 then
@@ -40,6 +41,12 @@ function gameplay.loadLevel(levelName, diffFolder)
     modules["state"].world["CurrentLevel"] = levelName
     print(levelName)
     loaded_level.load()
+
+    --// Re-add story task if it exists (so it persists across rooms)
+    local storyTask = modules["state"].story.getObjectiveText()
+    if storyTask then
+        modules["ui"].addTask(storyTask)
+    end
 end
 
 function gameplay.draw()

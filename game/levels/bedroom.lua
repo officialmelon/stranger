@@ -4,6 +4,8 @@ local utils = require("utils.utils")
 local ui = require("ui.ui")
 local worldspace = require("ui.worldspace")
 local state = require("state.state")
+local fade = require("ui.fade")
+local sounds = require("game.systems.sound")
 
 local chest = require("game.objects.chest")
 local door = require("game.objects.door")
@@ -32,9 +34,9 @@ function level.load()
 
     player.goTo(15, 475)
 
-    --// map creation
+    local doorLocked = not state.story.isPhase(1)
 
-    door.create(950, 310, "upstairs_hall", true, {x=300,y=475})
+    door.create(950, 310, "upstairs_hall", doorLocked, {x=300,y=475})
 
     vent.create(800, 550, "upstairs_hall", {x=625,y=475}, 67)
 
@@ -44,10 +46,20 @@ function level.load()
 
     bed.create(5, 500, false, true)
     dresser.create(425, 475, false)
-    screwdriver.create(475, 460, true)
 
-    local tsk = ui.addTask(state.translations[state.translations.currentLanguage]["BEDROOM_INVESTIGATE"])
-    state.player.currentTask = tsk
+    if state.story.isPast(1) then
+        screwdriver.create(475, 460, true)
+    end
+
+    if state.story.isPhase(1) and state.story.isStep("wake_up") then
+        fade.In(2.5)
+        state.story.setStep("heard_noise")
+        ui.displayText(
+            utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["NOISE_INVESTIGATE"]),
+            love.graphics.getHeight() - 100,
+            state.translations[state.translations.currentLanguage]["NOISE_INVESTIGATE"], 3.0,
+            false)
+    end
 end
 
 function level.update(dt)

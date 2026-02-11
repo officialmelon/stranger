@@ -30,6 +30,11 @@ function Door.create(x, y, level_name, x_y_spawn, id, callback)
         player.setState("isHiding", true)
         print("vent")
 
+        if state.story.isPhase(2) and not state.story.flags.ventOpened then
+            state.story.flags.ventOpened = true
+            state.story.setStep("in_hall")
+        end
+
         fade.Out(function ()
             gameplay.loadLevel(level_name)
             player.goTo(x_y_spawn.x, x_y_spawn.y)

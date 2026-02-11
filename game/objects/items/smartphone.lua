@@ -18,23 +18,28 @@ function smartphone.create(x, y, storyOrDecoration)
         return
     end
     
-    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 0.25, 3, nil)
+    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 0.25, 30, nil)
 
     local function onPickup()
         world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),
-            love.graphics.getHeight() - 100,
+            620,
             state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"], 2.5)
         player.addToInventory("smartphone")
+
+        if storyOrDecoration and state.story.isPhase(2) then
+            state.story.flags.hasSmartphone = true
+            state.story.setStep("found_smartphone")
+        end
     end
 
     local function onExamine()
         local centerX, centerY = utils.getObjectCenter(instance)
         ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["DIAL_911_SMARTPHONE"]),
-            love.graphics.getHeight() - 100,
+            620,
             state.translations[state.translations.currentLanguage]["DIAL_911_SMARTPHONE"], 2.5,
             true
         )
@@ -44,7 +49,7 @@ function smartphone.create(x, y, storyOrDecoration)
     if not storyOrDecoration then return end
 
     local centerX, centerY = utils.getObjectCenter(instance)
-    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["DIAL_911_SMARTPHONE_PROMPT"], 15, 2, onExamine, true)
+    worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["PICKUP_SMARTPHONE"], 15, 2, onPickup, true)
 end
 
 return smartphone

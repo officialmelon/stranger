@@ -12,7 +12,7 @@ function love.load()
     utils.initWindow()
     if not editorState then
         gameplay.init() 
-    else
+    else        
         editor.start("downstairs_hall")
     end
     gameplay.loadLevel("bedroom")

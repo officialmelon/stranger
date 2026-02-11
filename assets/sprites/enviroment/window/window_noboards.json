@@ -1,0 +1,62 @@
+{
+  "frames": [
+    {
+      "filename": "Sprite-0003 0.",
+      "frame": { "x": 0, "y": 0, "w": 132, "h": 170 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 132, "h": 170 },
+      "sourceSize": { "w": 132, "h": 170 },
+      "duration": 250
+    },
+    {
+      "filename": "Sprite-0003 1.",
+      "frame": { "x": 132, "y": 0, "w": 132, "h": 170 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 132, "h": 170 },
+      "sourceSize": { "w": 132, "h": 170 },
+      "duration": 250
+    },
+    {
+      "filename": "Sprite-0003 2.",
+      "frame": { "x": 264, "y": 0, "w": 132, "h": 170 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 132, "h": 170 },
+      "sourceSize": { "w": 132, "h": 170 },
+      "duration": 250
+    },
+    {
+      "filename": "Sprite-0003 3.",
+      "frame": { "x": 396, "y": 0, "w": 132, "h": 170 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 132, "h": 170 },
+      "sourceSize": { "w": 132, "h": 170 },
+      "duration": 250
+    }
+  ],
+  "meta": {
+    "app": "https://www.aseprite.org/",
+    "version": "1.x-dev",
+    "image": "window_noboards.png",
+    "format": "RGBA8888",
+    "size": { "w": 528, "h": 170 },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "Raining",
+        "from": 0,
+        "to": 3,
+        "direction": "forward",
+        "color": "#000000ff"
+      }
+    ],
+    "layers": [
+      { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
+      { "name": "Rain", "opacity": 255, "blendMode": "normal" }
+    ],
+    "slices": []
+  }
+}

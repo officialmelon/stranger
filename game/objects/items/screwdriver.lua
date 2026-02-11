@@ -22,10 +22,8 @@ function Screwdriver.create(x, y, story)
 
     local function onInteract()
         if story then
-            ui.removeTask(state.player.currentTask)
-
-            local tsk = ui.addTask(state.translations[state.translations.currentLanguage]["UNLOCK_VENT_INVESTIGATE"])
-            state.player.currentTask = tsk
+            state.story.flags.hasScrewdriver = true
+            state.story.setStep("found_screwdriver")
         end
         world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)

@@ -34,6 +34,7 @@ return {
     ["CurrentLevel"] = nil,
 
     isEditMode = false,
+    isStartOfGame = true,
 
     ["PersistentState"] = {}
 }

@@ -33,6 +33,12 @@ local tasks = {}
 --// tasks
 
 function ui.addTask(text)
+    for i = 1, #tasks do
+        if tasks[i].text == text then
+            return tasks[i]
+        end
+    end
+
     local task = {
         text = text
     }
@@ -49,6 +55,12 @@ function ui.removeTask(task)
         end
     end
     return false
+end
+
+function ui.clearTasks()
+    for i = #tasks, 1, -1 do
+        table.remove(tasks, i)
+    end
 end
 
 --// others
@@ -150,6 +162,7 @@ local function drawTexts()
 end
 
 local function drawTasks()
+    love.graphics.setFont(font)
     love.graphics.print("Tasks:", 1000, 720 /2.2)
     love.graphics.rectangle("fill", 1000, 720 / 2, 200, 5)
 

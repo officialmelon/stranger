@@ -37,7 +37,13 @@ function Mug.create(x, y, storyOrDecoration) -- true if story, false if not.
             love.graphics.getHeight() - 100,
             state.translations[state.translations.currentLanguage]["EXAMINE_MUG"], 2.5,
             true)
-        worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["PICKUP_MUG"], 15, 2, onPickup, true)
+
+        if state.story.isPhase(1) and not state.story.flags.coffeeFound then
+            state.story.flags.coffeeFound = true
+            state.story.setStep("found_coffee")
+        else
+            worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["PICKUP_MUG"], 15, 2, onPickup, true)
+        end
     end
 
     if not storyOrDecoration then return end

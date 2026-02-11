@@ -23,6 +23,7 @@ local table = require("game.objects.table")
 local chair = require("game.objects.chair")
 
 local mug = require("game.objects.items.mug")
+local landphone = require("game.objects.landphone")
 
 local level = {}
 
@@ -60,6 +61,12 @@ function level.load()
     cabinet.create(1400, 190, "default")
     cabinet.create(1280, 190, "pully")
     cabinet.create(1755, 190, "pully")
+
+    if state.story.isPhase(1) then
+        mug.create(50, 502, true)
+    end
+
+    landphone.create(1125, 400)
 
     wall.create(-1000, -15)
     wall.create(2150, -17)

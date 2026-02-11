@@ -20,6 +20,8 @@ local couch = require("game.objects.couch")
 local staircase = require("game.objects.staircase")
 
 local mug = require("game.objects.items.mug")
+local safe = require("game.objects.safe")
+local smartphone = require("game.objects.items.smartphone")
 
 local level = {}
 
@@ -43,6 +45,11 @@ function level.load()
     window.create(-700, 275)
 
     plants.create(130, 350)
+
+    safe.create(1050, 490, smartphone, {true}, function()
+        state.story.flags.safeOpened = true
+        state.story.setStep("opened_safe")
+    end)
 end
 
 function level.update(dt)

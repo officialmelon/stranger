@@ -23,6 +23,7 @@ local table = require("game.objects.table")
 local chair = require("game.objects.chair")
 
 local mug = require("game.objects.items.mug")
+local key = require("game.objects.items.key")
 
 local level = {}
 
@@ -51,6 +52,10 @@ function level.load()
     wall.create(-1000, -15)
     wall.create(1365, -17)
     floor.create(-1000, 625, 1300)
+
+    if state.story.isPast(1) and state.story.flags.landlineUsed then
+        key.create(-130, 460, true)
+    end
 
 end
 

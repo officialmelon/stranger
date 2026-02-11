@@ -12,7 +12,7 @@ local sprites = {
     ["default"]   = world.createObject(default),
 }
 
-function Key.create(x, y)
+function Key.create(x, y, story)
     local stateKey = "item_key_" .. x .. "_" .. y
     if world.getPersistentState(stateKey) == "collected" then
         return
@@ -25,9 +25,14 @@ function Key.create(x, y)
         world.removeObjectFromEnviroment(instance)
         text = ui.displayText(
             utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),
-            love.graphics.getHeight() - 100,
-            state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"])
+            620,
+            state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"], 2.5)
         player.addToInventory("key")
+
+        if story and state.story.isPhase(2) then
+            state.story.flags.hasKey = true
+            state.story.setStep("found_key")
+        end
     end
     local centerX, centerY = utils.getObjectCenter(instance)
     worldspace.create_interact_worldspace_ui(centerX, centerY, state.translations[state.translations.currentLanguage]["PICKUP_KEY"], 15, 2, onPickup, true)

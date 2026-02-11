@@ -8,6 +8,7 @@ local utils    = require("utils.utils")
 local worldui  = require("ui.worldspace")
 local player   = require("game.systems.player")
 local mic      = require("game.systems.mic")
+local camera   = require("game.systems.camera")
 
 local intruderState    = nil
 local sprite           = nil
@@ -17,6 +18,8 @@ local DOOR_WAIT_TIME   = 2.0
 local grabSpamMaxAmount = 14
 local grabSpamAmount   = 0
 local grabSpamPrompt   = nil
+local grabTimer        = 0
+local GRAB_TIMEOUT     = 3.0
 local stunningTimer    = 0
 local lastKnownX       = nil
 local lastKnownRoom    = nil
@@ -26,12 +29,13 @@ local hearingRadius    = 500
 local visionDistance   = 800
 
 local STATES = {
-    IDLE        = "IDLE",
-    PATROL      = "PATROL",
-    CHASE       = "CHASE",
-    INVESTIGATE = "INVESTIGATE",
-    SEARCH_ROOM = "SEARCH_ROOM",
-    DISTRACTED  = "DISTRACTED"
+    IDLE            = "IDLE",
+    PATROL          = "PATROL",
+    CHASE           = "CHASE",
+    INVESTIGATE     = "INVESTIGATE",
+    SEARCH_ROOM     = "SEARCH_ROOM",
+    DISTRACTED      = "DISTRACTED",
+    SCRIPTED_CHASE  = "SCRIPTED_CHASE"
 }
 
 local function setAnimation(name)
@@ -46,9 +50,16 @@ end
 
 function intruder.init()
     intruderState = state.intruder
-    intruderState.currentState = STATES.PATROL
     intruderState.currentAnim = "Walk"
     intruderState.facingRight = false
+
+    if state.story.isPhase(1) then
+        intruderState.active = false
+        intruderState.currentState = STATES.IDLE
+    else
+        intruderState.active = true
+        intruderState.currentState = STATES.PATROL
+    end
 
     sprite = peachy.new("assets/sprites/intruder/intruder.json", utils.setup_img("assets/sprites/intruder/intruder.png"), "Walk")
     sprite:play()
@@ -181,8 +192,27 @@ function intruder.checkHearing()
     return false
 end
 
+function intruder.startScriptedChase(room, x, y)
+    intruderState.active = true
+    intruderState.currentRoom = room
+    intruderState.x = x
+    intruderState.y = y
+    intruderState.currentState = STATES.SCRIPTED_CHASE
+    state.story.flags.intruderSpawned = true
+    state.story.setStep("intruder_chase")
+    state.world.Camera.shake.intensity = 3
+    state.world.Camera.shake.duration = 0.6
+end
+
 function intruder.update(dt)
-    if not intruderState or not intruderState.active then return end
+    if not intruderState then return end
+
+    if state.story.isPhase(1) and state.story.flags.coffeeFound and not state.story.flags.intruderSpawned then
+        local pRoom = state.world["CurrentLevel"]
+        intruder.startScriptedChase(pRoom, state.player.x + 600, intruderState.y)
+    end
+
+    if not intruderState.active then return end
 
     if sprite and stunningTimer <= 0 then 
         sprite:update(dt) 
@@ -203,6 +233,25 @@ function intruder.update(dt)
     if grabSpamPrompt then
         grabSpamPrompt.x, grabSpamPrompt.y = state.player.px, state.player.py
         setAnimation("Idle")
+
+        grabTimer = grabTimer - dt
+        if grabTimer <= 0 then
+            worldui.remove_interact_worldspace_ui(grabSpamPrompt)
+            grabSpamPrompt = nil
+            intruder.onGrabFail()
+        end
+
+        return
+    end
+
+    if intruderState.currentState == STATES.SCRIPTED_CHASE then
+        state.player.facingRight = intruderState.x > state.player.x
+        intruder.moveTowards(dt, state.player.x, 1.6)
+        local dx = state.player.x - intruderState.x
+        local dist = math.abs(dx)
+        if dist < 110 then
+            intruder.grabPlayer()
+        end
         return
     end
 
@@ -323,6 +372,30 @@ end
 function intruder.grabPlayer()
     if stunningTimer > 0 or grabSpamPrompt then return end
 
+    if state.story.isPhase(1) then
+        state.player.isAbleToMove = false
+        intruderState.active = false
+        state.story.setStep("caught")
+        state.world.Camera.shake.intensity = 5
+        state.world.Camera.shake.duration = 1.5
+        fade.Out(function()
+            state.story.advancePhase()
+            state.story.flags.intruderSpawned = false
+            state.story.flags.coffeeFound = false
+            intruderState.active = true
+            intruderState.currentState = STATES.PATROL
+            intruderState.currentRoom = "living_room"
+            intruderState.x, intruderState.y = 100, 475
+            state.player.isAbleToMove = true
+            state.world.isStartOfGame = true
+            local gameplay = require("game.scenes.gameplay")
+            gameplay.loadLevel("bedroom")
+            player.goTo(15, 475)
+            fade.In(2.5)
+        end, 2.0)
+        return
+    end
+
     if intruderState.knowsHidingSpot and state.player.isHiding and state.player.currentHidingSpot then
         intruderState.knowsHidingSpot = false
         state.player.currentHidingSpot.exit()
@@ -332,6 +405,7 @@ function intruder.grabPlayer()
     intruderState.facingRight = state.player.x > intruderState.x
     state.player.facingRight  = not intruderState.facingRight
     grabSpamAmount = 0
+    grabTimer = GRAB_TIMEOUT
 
     grabSpamPrompt = worldui.create_interact_worldspace_ui(
         state.player.px, 
@@ -346,12 +420,29 @@ function intruder.grabPlayer()
             if grabSpamAmount >= grabSpamMaxAmount then
                 worldui.remove_interact_worldspace_ui(grabSpamPrompt)
                 grabSpamPrompt = nil
+                grabTimer = 0
                 state.player.isAbleToMove = true
                 stunningTimer = 4.0
             end
         end, 
         false
     )
+end
+
+function intruder.onGrabFail()
+    state.player.isAbleToMove = false
+    intruderState.active = false
+    state.world.Camera.shake.intensity = 5
+    state.world.Camera.shake.duration = 1.5
+    fade.Out(function()
+        intruderState.active = true
+        intruderState.currentState = STATES.PATROL
+        state.player.isAbleToMove = true
+        local gameplay = require("game.scenes.gameplay")
+        gameplay.loadLevel("bedroom")
+        player.goTo(15, 475)
+        fade.In(2.5)
+    end, 2.0)
 end
 
 function intruder.draw()
