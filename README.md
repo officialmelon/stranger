@@ -1,0 +1,1 @@
+In order to run the game, install Love2D 12.0 and up. Run `love .` in the game directory.
