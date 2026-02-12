@@ -204,6 +204,25 @@ function intruder.startScriptedChase(room, x, y)
     state.world.Camera.shake.duration = 0.6
 end
 
+function intruder.alertToRoom(room, x)
+    if not intruderState or not intruderState.active then return end
+    intruderState.currentState = STATES.CHASE
+    lastKnownX = x
+    lastKnownRoom = room
+end
+
+function intruder.deactivate()
+    if not intruderState then return end
+    intruderState.active = false
+    intruderState.currentState = STATES.IDLE
+end
+
+function intruder.activate()
+    if not intruderState then return end
+    intruderState.active = true
+    intruderState.currentState = STATES.PATROL
+end
+
 function intruder.update(dt)
     if not intruderState then return end
 
@@ -435,8 +454,22 @@ function intruder.onGrabFail()
     state.world.Camera.shake.intensity = 5
     state.world.Camera.shake.duration = 1.5
     fade.Out(function()
-        intruderState.active = true
-        intruderState.currentState = STATES.PATROL
+        if state.story.isPhase(2) and state.story.isAtLeastStep("going_upstairs") then
+            state.story.step = "found_smartphone"
+        elseif state.story.isPhase(3) then
+            state.story.step = "vent_banging"
+        end
+
+        if state.story.isPhase(3) then
+            intruderState.active = false
+            intruderState.currentState = STATES.IDLE
+        else
+            intruderState.active = true
+            intruderState.currentState = STATES.PATROL
+        end
+
+        intruderState.currentRoom = "living_room"
+        intruderState.x, intruderState.y = 100, 475
         state.player.isAbleToMove = true
         local gameplay = require("game.scenes.gameplay")
         gameplay.loadLevel("bedroom")

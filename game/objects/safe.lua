@@ -48,8 +48,8 @@ function Safe.create(x, y, containedItem, spawnArgs, onOpen)
                 false)
 
             if containedItem then
-                local itemX = x + 30
-                local itemY = y + 20
+                local itemX = x + 75
+                local itemY = y + 75
                 containedItem.create(itemX, itemY, unpack(spawnArgs or {}))
             end
 

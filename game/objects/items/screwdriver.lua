@@ -18,7 +18,7 @@ function Screwdriver.create(x, y, story)
         return
     end
     
-    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 1.25, 3, nil)
+    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 1.25, 100, nil)
 
     local function onInteract()
         if story then

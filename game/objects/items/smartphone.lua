@@ -18,20 +18,32 @@ function smartphone.create(x, y, storyOrDecoration)
         return
     end
     
-    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 0.25, 30, nil)
+    local instance = world.insertObjectIntoEnviroment(sprites["default"], x, y, 0.25, 3, nil)
 
     local function onPickup()
         world.setPersistentState(stateKey, "collected")
         world.removeObjectFromEnviroment(instance)
-        text = ui.displayText(
-            utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),
-            620,
-            state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"], 2.5)
         player.addToInventory("smartphone")
 
         if storyOrDecoration and state.story.isPhase(2) then
             state.story.flags.hasSmartphone = true
             state.story.setStep("found_smartphone")
+            ui.displayText(
+                utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["PHONE_POWERON"]),
+                620,
+                state.translations[state.translations.currentLanguage]["PHONE_POWERON"], 3.0,
+                false)
+
+            state.world.Camera.shake.intensity = 2
+            state.world.Camera.shake.duration = 0.3
+
+            local intruderSystem = require("game.systems.intruder")
+            intruderSystem.alertToRoom(state.world["CurrentLevel"], state.player.x)
+        else
+            ui.displayText(
+                utils.returnTextCenteredWidth(state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"]),
+                620,
+                state.translations[state.translations.currentLanguage]["ITEM_PICKED_UP"], 2.5)
         end
     end
 

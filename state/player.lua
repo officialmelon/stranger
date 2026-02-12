@@ -12,7 +12,7 @@ return {
     hp=100,
     maxhp=100,
 
-    speed = 500,
+    speed = 100,
     sprintMultiplier = 1.5,
     sprintAnimationMultiplier = 1.5,
 

@@ -54,7 +54,7 @@ function level.load()
     floor.create(-1000, 625, 1300)
 
     if state.story.isPast(1) and state.story.flags.landlineUsed then
-        key.create(-130, 460, true)
+        key.create(-130, 440, true)
     end
 
 end

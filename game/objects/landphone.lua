@@ -13,7 +13,7 @@ local sprites = {
 }
 
 function Landline.create(x, y)
-    local instance = world.insertObjectIntoEnviroment(sprites["Landline"], x, y, 1, 3)
+    local instance = world.insertObjectIntoEnviroment(sprites["Landline"], x, y, 0.65, 3)
 
     if state.story.isPast(1) then
         local centerX, centerY = utils.getObjectCenter(instance)

@@ -17,6 +17,8 @@ local modules = {
 
 --// Stuff
 
+local currentLevel = nil
+
 function gameplay.init()
     modules["mic"].init()
     modules["player"].initRain()
@@ -25,6 +27,11 @@ end
 
 function gameplay.loadLevel(levelName, diffFolder)
     assert(levelName)
+
+    if currentLevel and currentLevel.kill then
+        currentLevel.kill()
+    end
+
     modules["world"].clear()
     modules["worldspace"].clear_worldspace_ui()
     modules["ui"].clearTasks()
@@ -42,7 +49,8 @@ function gameplay.loadLevel(levelName, diffFolder)
     print(levelName)
     loaded_level.load()
 
-    --// Re-add story task if it exists (so it persists across rooms)
+    currentLevel = loaded_level
+
     local storyTask = modules["state"].story.getObjectiveText()
     if storyTask then
         modules["ui"].addTask(storyTask)
@@ -59,9 +67,6 @@ function gameplay.draw()
     modules["effects"].draw()
     modules["ui"].draw()
     modules["fade"].draw()
-    
-    --// debug
-    love.graphics.print(modules["state"].world["CurrentLevel"],0,0)
 end
 
 function gameplay.keypressed(key)
@@ -82,6 +87,10 @@ function gameplay.update(dt)
     modules["worldspace"].update(dt)
     modules["sounds"].update(dt)
     modules["intruder"].update(dt)
+
+    if currentLevel and currentLevel.update then
+        currentLevel.update(dt)
+    end
 end
 
 return gameplay

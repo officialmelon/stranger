@@ -5,7 +5,7 @@ Story.step = "wake_up"
 
 Story.phaseSteps = {
     [1] = { "wake_up", "heard_noise", "investigating", "found_coffee", "intruder_chase", "caught" },
-    [2] = { "wake_up", "door_locked", "search_room", "found_screwdriver", "open_vent", "in_hall", "found_phone", "go_upstairs", "locked_in_room" },
+    [2] = { "wake_up", "found_screwdriver", "open_vent", "in_hall", "found_phone", "found_key", "opened_safe", "found_smartphone", "going_upstairs", "locked_in_room" },
     [3] = { "wake_up", "call_police", "phone_dead", "banging_stops", "vent_banging", "escape_bathroom", "find_hiding_spot", "ending" }
 }
 
@@ -91,8 +91,18 @@ function Story.getObjectiveText()
             key = "SEARCH_FOR_SAFE"
         elseif not Story.flags.hasSmartphone then
             key = "INVESTIGATE_FOR_ITEMS"
+        elseif Story.isAtLeastStep("going_upstairs") then
+            key = "FIND_ROOM"
         else
-            key = "LOOK_FOR_CHARGER"
+            key = "GET_SOMEWHERE_SAFE"
+        end
+    elseif Story.currentPhase == 3 then
+        if not Story.flags.phoneDead then
+            key = "CALL_911"
+        elseif Story.isAtLeastStep("vent_banging") then
+            key = "FIND_HIDING_SPOT"
+        else
+            key = "DOOR_LOCKED_SAFE"
         end
     end
     
