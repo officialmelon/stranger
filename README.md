@@ -17,6 +17,12 @@ Install Love2D, run `love .` in the directory
 The game is made in love2d (lua, 2d engine)
 If you want to check out my lapses for asset development, check the user melon if you do.
 
+### Screenshots
+
+![Screenshot_1](screenshots/Screenshot1.png)
+![Screenshot_2](screenshots/Screenshot2.png)
+
+
 ### Credits
 Assets are made by me,
 Code is mostly created by both me and *some* codethrough the use of AI tools like antigravity.
