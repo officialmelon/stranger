@@ -52,11 +52,11 @@ end
 function utils.initWindow()
     local w, h = love.window.getDesktopDimensions()
     local windowWidth, windowHeight = w * 0.7, h * 0.7
-    push:setupScreen(1280, 720, windowWidth, windowHeight, { fullscreen = false })
-    love.window.setTitle( "Stranger Beta 0.1" )
-    love.window.setMode(windowWidth, windowHeight, {
-        resizable = false,
+    push:setupScreen(1280, 720, windowWidth, windowHeight, {
+        fullscreen = false,
+        resizable = true,
     })
+    love.window.setTitle( "Stranger Beta 0.1" )
 end
 
 function utils.getDistance(x1, y1, x2, y2)

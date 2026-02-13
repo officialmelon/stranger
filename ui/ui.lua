@@ -155,9 +155,16 @@ end
 
 local function drawTexts()
     love.graphics.setFont(font)
-    for _, textObj in ipairs(storedTexts) do
+    local TEXT_PADDING = 6
+    local lineHeight = font:getHeight()
+    -- Stack texts upward from the bottom so they don't overlap
+    local offsetFromBottom = 0
+    for i = #storedTexts, 1, -1 do
+        local textObj = storedTexts[i]
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.print(string.sub(textObj.text, 1, textObj.visibleCount), textObj.x, textObj.y)
+        local drawY = textObj.y - offsetFromBottom
+        love.graphics.print(string.sub(textObj.text, 1, textObj.visibleCount), textObj.x, drawY)
+        offsetFromBottom = offsetFromBottom + lineHeight + TEXT_PADDING
     end
 end
 
